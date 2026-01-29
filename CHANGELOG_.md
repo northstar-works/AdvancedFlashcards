@@ -1,5 +1,28 @@
 # Changelog — KenpoFlashcardsProject-v2 (Android)
 
+## 5.4.0 (build 37) — 2026-01-28
+
+### Added — GEN8 Deck Access + Invite Codes
+- **Invite code redemption**: Users can unlock decks by entering an invite code in **Edit Decks → Switch** (calls `POST /api/sync/redeem-invite-code`).
+- **Per-deck logos support**: Android deck model now supports `logoPath` so deck icons/logos match the WebApp “Switch Study Subject” experience.
+- **Admin Deck Access controls (Option 1+)**: Admin screen now includes a **Deck Admin (Server)** section to:
+  - View/update deck access config (calls `GET/POST /api/sync/admin/deck-config`).
+  - Generate/delete invite codes (calls `POST /api/sync/admin/deck-invite-code`, `DELETE /api/sync/admin/deck-invite-code/<code>`).
+  - Quick link to open Web Admin dashboard (`/admin`).
+- **Deck Admin (Server)** section (admin-only):
+  - View/edit/save server deck config (built-in decks + related toggles).
+  - Generate deck invite codes.
+  - Button to open the full Web Admin page in a browser.
+- **Server-sourced admin state** stored in app settings (`isAdmin`) via `/api/admin/status`.
+- Deck model supports optional `logoPath` from the server.
+
+### Changed
+- After redeeming a code, the app performs an **authoritative deck pull** and updates available deck list.
+- Admin visibility is based on the server’s admin truth (token-based), not local assumptions.
+- Version bump to align with WebServer GEN8 deck-access generation.
+
+---
+
 ## 5.3.1 (build 36) — 2026-01-26
 
 ### Changed
@@ -532,4 +555,3 @@ versionName "4.1.0"
 - **Custom Set:**
   - Custom Set now uses **Custom Set Settings** for sort/random (instead of global study settings).
   - Added Settings action to **pick a number of random Unlearned cards** for the Custom Set (with 🎲 helper).
-
