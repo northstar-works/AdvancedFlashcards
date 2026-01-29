@@ -775,7 +775,6 @@ object WebAppSync {
             VocabularySyncResult(success = false, error = e.message ?: "Pull failed")
         }
     }
-}
 
 /**
  * SERVER IMPLEMENTATION GUIDE
@@ -1024,3 +1023,4 @@ object WebAppSync {
         val text = (if (code in 200..299) conn.inputStream else conn.errorStream).bufferedReader().readText()
         JSONObject(text)
     }
+}
