@@ -548,31 +548,45 @@ suspend fun deleteBreakdown(cardId: String) = store.deleteBreakdown(cardId)
 
     suspend fun syncPullDecksAuthoritative(): JSONObject {
         val s = adminSettingsFlow().first()
-        val resp = WebAppSync.pullDecks(s.webAppUrl, s.authToken)
-        val decksArr = resp.optJSONArray("decks") ?: JSONArray()
-        val decks = mutableListOf<StudyDeck>()
-        for (i in 0 until decksArr.length()) {
-            val o = decksArr.optJSONObject(i) ?: continue
-            decks.add(
-                StudyDeck(
-                    id = o.optString("id",""),
-                    name = o.optString("name",""),
-                    description = o.optString("description",""),
-                    isDefault = o.optBoolean("isDefault", false),
-                    isBuiltIn = o.optBoolean("isBuiltIn", false),
-                    sourceFile = o.optString("sourceFile", null)?.takeIf { it.isNotBlank() },
-                    cardCount = o.optInt("cardCount", 0),
-                    createdAt = o.optLong("createdAt", 0),
-                    updatedAt = o.optLong("updatedAt", 0),
-                    logoPath = o.optString("logoPath", null)?.takeIf { it.isNotBlank() }
-                )
-            )
+
+        val result = WebAppSync.pullDecks(s.webAppUrl, s.authToken)
+        if (!result.success) {
+            return JSONObject()
+                .put("success", false)
+                .put("error", result.error)
         }
+
+        val decks = result.decks
         store.replaceDecksFromServer(decks)
+
         val ds = deckSettingsFlow().first()
         val ids = decks.map { it.id }
-        store.saveDeckSettings(ds.copy(availableDecks = ids, activeDeckId = ds.activeDeckId.takeIf { it in ids } ?: "kenpo"))
-        return resp
+        val newActive = ds.activeDeckId.takeIf { it in ids }
+            ?: result.activeDeckId.takeIf { it in ids }
+            ?: "kenpo"
+        store.saveDeckSettings(ds.copy(availableDecks = ids, activeDeckId = newActive))
+
+        // Keep a JSONObject response for any callers that expect the raw payload shape.
+        val decksArr = JSONArray()
+        for (d in decks) {
+            val o = JSONObject()
+            o.put("id", d.id)
+            o.put("name", d.name)
+            o.put("description", d.description)
+            o.put("isDefault", d.isDefault)
+            o.put("isBuiltIn", d.isBuiltIn)
+            o.put("sourceFile", d.sourceFile ?: JSONObject.NULL)
+            o.put("cardCount", d.cardCount)
+            o.put("createdAt", d.createdAt)
+            o.put("updatedAt", d.updatedAt)
+            o.put("logoPath", d.logoPath ?: JSONObject.NULL)
+            decksArr.put(o)
+        }
+
+        return JSONObject()
+            .put("success", true)
+            .put("activeDeckId", newActive)
+            .put("decks", decksArr)
     }
 
     // Option2 wrappers

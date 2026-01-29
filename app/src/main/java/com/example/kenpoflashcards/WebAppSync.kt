@@ -563,10 +563,11 @@ object WebAppSync {
                         description = dObj.optString("description", ""),
                         isDefault = dObj.optBoolean("isDefault", false),
                         isBuiltIn = dObj.optBoolean("isBuiltIn", false),
-                        sourceFile = dObj.optString("sourceFile", null),
+                        sourceFile = dObj.optString("sourceFile", null)?.takeIf { it.isNotBlank() },
                         cardCount = dObj.optInt("cardCount", 0),
                         createdAt = dObj.optLong("createdAt", 0),
-                        updatedAt = dObj.optLong("updatedAt", 0)
+                        updatedAt = dObj.optLong("updatedAt", 0),
+                        logoPath = dObj.optString("logoPath", null)?.takeIf { it.isNotBlank() }
                     ))
                 }
                 
