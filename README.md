@@ -7,7 +7,7 @@ An Android flashcard app designed for studying multiple subjects. It includes a 
 
 This app focuses on **active recall**, **progress tracking**, and **organized learning**, making it ideal for beginners through advanced practitioners.
 
-**Current Version:** v5.6.0 (build 39)
+**Current Version:** v6.0.0 (build 40)
 **Changelog:** [CHANGELOG.md](CHANGELOG.md)
 
 ---
@@ -228,6 +228,7 @@ app/src/main/
 
 | Version | Code | Key Changes |
 |---------|------|-------------|
+| **6.0.0** | 40 | Synced metadata from WebServer (TODO: add feature summary) |
 | **5.6.0** | 39 | Admin access fix, concise AI definitions, per-deck descriptive toggle, server verification, AI deck description |
 | **5.5.0** | 38 | Feature parity with WebServer v8.4.0: deck editing, set/clear default deck, user card deletion sync |
 | **5.4.0** | 37 | GEN8: Token-admin deck config + invite/redeem codes, server-sourced admin status, deck logo support |
