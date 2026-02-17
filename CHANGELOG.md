@@ -1,4 +1,8 @@
-# Changelog — AdvancedFlashcardsProject (Android)
+# Changelog — Advanced Flashcards (Android)
+
+All notable changes are documented here. Format: **Added / Changed / Fixed**.
+
+---
 
 ## v7.1.0 (build 42) — 2026-02-17
 
@@ -13,15 +17,19 @@
 - **`WebAppSync.pushRemoteConfig()`**: pushes to `POST /api/sync/admin/remote-config` (admin Bearer token).
 - **`Repository.checkAndApplyRemoteConfig()`**: called silently after each successful login; if the server returns a different host/port/type, saves the new `webAppUrl` and `serverType` to DataStore automatically.
 - **`AdminSettings.serverType`** field added (persisted to DataStore); default `"standalone"`.
+- **`WebAppSync.normalizeUrl()`** — ensures any URL entered by the user has `http://` prepended. Accepts bare host:port, `http://`, or `https://`. Applied in `verifyServer()`, `login()`, Save URL button, and the login flow.
+- **In-app Debug Log screen** — `Admin → View Debug Log` shows a real-time log of sync events and errors with timestamps, level filter (ALL / ERR / WARN / INFO), tap-to-expand detail, and error count badge. Share icon copies the full log to clipboard.
+- **`AppLog` singleton** — captures errors from Repository with full context (URL, token prefix, status code).
 
 ### Changed
 - **Old "Server URL" text field in Admin screen replaced by the new Remote Config Push section. The previous `syncPushManagedServerUrl` / `syncPullServerConfig` functions remain for backwards compatibility.
 
 ### Fixed
 - **Server URL missing http://** — `Verify Server` and `Login` now work when the URL is entered without a scheme (e.g. `sidscri.tplinkdns.com:8009` or `192.168.0.205:8009`). Added `WebAppSync.normalizeUrl()` which prepends `http://` automatically. Applied to `verifyServer()`, `login()`, the Save URL button, and the login flow.
-- **"Not an Advanced Flashcards server" verify error** — `VALID_SERVER_APPS` now includes the space-separated name variants (`"Advanced Flashcards WebAppServer"` etc.) that the server returns from its `version.json` `name` field. Previously only the old camelCase names without spaces were accepted.
+- **"Not an Advanced Flashcards server" on Verify** — `VALID_SERVER_APPS` now includes the space-separated name variants (`"Advanced Flashcards WebAppServer"` etc.) that `version.json` actually returns. Previously only old camelCase names without spaces were accepted.
+- **401 "Save failed: 401" on Push/Pull API keys** — server tokens are in-memory and get wiped on every RPi reboot/service restart. App now detects this, clears the stale token, marks the session expired, and shows `"⚠️ Session expired — please login again"` instead of a raw 401 error.
 
-- **Updated bundled Web Server to v8.7.0 (build 60)** (from v8.6.1 build 58), including:
+## v7.0.0 (build 41) — 2026-02-09 **Updated bundled Web Server to v8.7.0 (build 60)** (from v8.6.1 build 58), including:
 
 ### Added
 - **Packaged support metadata:** add `webappserver_version.json` (web server core version file).

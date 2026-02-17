@@ -52,6 +52,7 @@ class Repository(private val context: Context, private val store: Store) {
     // Admin settings
     fun adminSettingsFlow(): Flow<AdminSettings> = store.adminSettingsFlow()
     suspend fun saveAdminSettings(s: AdminSettings) = store.saveAdminSettings(s)
+    suspend fun getAdminSettings(): AdminSettings = store.adminSettingsFlow().first()
 
     // Status management
     suspend fun setStatus(id: String, status: CardStatus) {
@@ -355,16 +356,43 @@ suspend fun deleteBreakdown(cardId: String) = store.deleteBreakdown(cardId)
     
     // Push API keys to server (encrypted)
     suspend fun syncPushApiKeys(token: String, serverUrl: String, chatGptKey: String, chatGptModel: String, geminiKey: String, geminiModel: String): WebAppSync.SyncResult {
-        if (token.isBlank()) return WebAppSync.SyncResult(false, error = "No auth token")
+        if (token.isBlank()) return WebAppSync.SyncResult(false, error = "No auth token — please login")
         val url = serverUrl.ifBlank { WebAppSync.DEFAULT_SERVER_URL }
-        return WebAppSync.pushApiKeys(url, token, chatGptKey, chatGptModel, geminiKey, geminiModel)
+        AppLog.d("Repo", "pushApiKeys → $url")
+        val result = WebAppSync.pushApiKeys(url, token, chatGptKey, chatGptModel, geminiKey, geminiModel)
+        if (!result.success) {
+            val is401 = result.error?.contains("401") == true
+            AppLog.e("Repo", "pushApiKeys failed: ${result.error}", "url=$url token=${token.take(8)}… is401=$is401")
+            if (is401) {
+                // Token was invalidated (server restart / reboot). Mark logged out.
+                val current = getAdminSettings()
+                saveAdminSettings(current.copy(isLoggedIn = false, authToken = ""))
+                return WebAppSync.SyncResult(false, error = "SESSION_EXPIRED")
+            }
+        } else {
+            AppLog.i("Repo", "pushApiKeys success")
+        }
+        return result
     }
     
     // Pull API keys from server
     suspend fun syncPullApiKeys(token: String, serverUrl: String): WebAppSync.ApiKeysResult {
-        if (token.isBlank()) return WebAppSync.ApiKeysResult(false, error = "No auth token")
+        if (token.isBlank()) return WebAppSync.ApiKeysResult(false, error = "No auth token — please login")
         val url = serverUrl.ifBlank { WebAppSync.DEFAULT_SERVER_URL }
-        return WebAppSync.pullApiKeys(url, token)
+        AppLog.d("Repo", "pullApiKeys → $url")
+        val result = WebAppSync.pullApiKeys(url, token)
+        if (!result.success) {
+            val is401 = result.error?.contains("401") == true
+            AppLog.e("Repo", "pullApiKeys failed: ${result.error}", "url=$url is401=$is401")
+            if (is401) {
+                val current = getAdminSettings()
+                saveAdminSettings(current.copy(isLoggedIn = false, authToken = ""))
+                return WebAppSync.ApiKeysResult(false, error = "SESSION_EXPIRED")
+            }
+        } else {
+            AppLog.i("Repo", "pullApiKeys success")
+        }
+        return result
     }
     
     // Pull API keys for any authenticated user (uses /api/sync/apikeys endpoint)

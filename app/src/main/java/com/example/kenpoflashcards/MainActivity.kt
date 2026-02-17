@@ -54,6 +54,8 @@ private val DarkPanel2 = Color(0xFF11161F)
 private val DarkBorder = Color(0xFF2B3140)
 private val DarkText = Color(0xFFEAEEF7)
 private val DarkMuted = Color(0xFFB7C0D4)
+private val DarkSurface = Color(0xFF151A22)
+private val DarkSurface2 = Color(0xFF1E2533)
 private val AccentGood = Color(0xFF12311F)
 private val AccentBlue = Color(0xFF1F6FEB)
 
@@ -89,6 +91,7 @@ private sealed class Route(val path: String) {
     data object SyncProgress : Route("sync_progress")
     data object UserGuide : Route("user_guide")
     data object ManageDecks : Route("manage_decks")
+    data object DebugLog : Route("debug_log")
 }
 
 @Composable
@@ -111,6 +114,7 @@ fun AppRoot() {
         composable(Route.SyncProgress.path) { SyncProgressScreen(nav, repo) }
         composable(Route.UserGuide.path) { UserGuideScreen(nav) }
         composable(Route.ManageDecks.path) { ManageDecksScreen(nav, repo) }
+        composable(Route.DebugLog.path) { DebugLogScreen(nav) }
     }
 }
 
@@ -1643,7 +1647,11 @@ Spacer(Modifier.height(16.dp))
                         ))
                         // Then push to server
                         val result = repo.syncPushApiKeys(adminSettings.authToken, adminSettings.webAppUrl, chatGptKey, chatGptModel, geminiKey, geminiModel)
-                        statusMessage = if (result.success) "API keys pushed to server!" else "Error: ${result.error}"
+                        statusMessage = when {
+                            result.success -> "API keys pushed to server!"
+                            result.error == "SESSION_EXPIRED" -> "⚠️ Session expired — please login again"
+                            else -> "Error: ${result.error}"
+                        }
                         isLoading = false
                     }
                 }, Modifier.weight(1f), enabled = !isLoading && adminSettings.isLoggedIn) { Text(if (isLoading) "..." else "Push to Server") }
@@ -1668,7 +1676,10 @@ Spacer(Modifier.height(16.dp))
                             ))
                             statusMessage = "API keys pulled from server!"
                         } else {
-                            statusMessage = "Error: ${result.error}"
+                            statusMessage = when (result.error) {
+                                "SESSION_EXPIRED" -> "⚠️ Session expired — please login again"
+                                else -> "Error: ${result.error}"
+                            }
                         }
                         isLoading = false
                     }
@@ -1686,6 +1697,124 @@ Both Android app and web server share the same encrypted keys.
 Server: ${adminSettings.webAppUrl.ifBlank { WebAppSync.DEFAULT_SERVER_URL }}
 Logged in as: ${adminSettings.username} (Admin)
             """.trimIndent(), color = DarkMuted, fontSize = 10.sp)
+
+            Spacer(Modifier.height(24.dp))
+            Divider(color = DarkSurface2)
+            Spacer(Modifier.height(12.dp))
+            OutlinedButton(
+                onClick = { nav.navigate(Route.DebugLog.path) },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = DarkMuted)
+            ) {
+                Icon(Icons.Default.Info, "Debug Log", Modifier.size(16.dp))
+                Spacer(Modifier.width(8.dp))
+                Text("View Debug Log", fontSize = 13.sp)
+                Spacer(Modifier.weight(1f))
+                val errorCount = AppLog.entries.count { it.level == AppLog.Level.ERROR }
+                if (errorCount > 0) {
+                    Text("$errorCount error${if (errorCount == 1) "" else "s"}", fontSize = 11.sp, color = Color.Red)
+                }
+            }
+        }
+    }
+}
+
+// ==================== DEBUG LOG SCREEN ====================
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DebugLogScreen(nav: NavHostController) {
+    val context = LocalContext.current
+    var entries by remember { mutableStateOf(AppLog.entries) }
+    var filterLevel by remember { mutableStateOf<AppLog.Level?>(null) }
+    var expandedEntry by remember { mutableStateOf<AppLog.Entry?>(null) }
+
+    val shown = if (filterLevel == null) entries else entries.filter { it.level == filterLevel }
+    val errorCount = entries.count { it.level == AppLog.Level.ERROR }
+    val warnCount  = entries.count { it.level == AppLog.Level.WARN }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Debug Log", color = Color.White) },
+                navigationIcon = { IconButton({ nav.popBackStack() }) { Icon(Icons.Default.ArrowBack, "Back", tint = Color.White) } },
+                actions = {
+                    IconButton({
+                        AppLog.clear()
+                        entries = AppLog.entries
+                    }) { Icon(Icons.Default.Delete, "Clear", tint = Color.White) }
+                    IconButton({
+                        val text = AppLog.export()
+                        val clipboard = context.getSystemService(android.content.ClipboardManager::class.java)
+                        clipboard?.setPrimaryClip(android.content.ClipData.newPlainText("Debug Log", text))
+                        android.widget.Toast.makeText(context, "Log copied to clipboard", android.widget.Toast.LENGTH_SHORT).show()
+                    }) { Icon(Icons.Default.Share, "Copy", tint = Color.White) }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = DarkSurface)
+            )
+        },
+        containerColor = DarkBg
+    ) { padding ->
+        Column(Modifier.padding(padding)) {
+            // Stats + filter bar
+            Row(
+                Modifier.fillMaxWidth().background(DarkSurface).padding(horizontal = 12.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("${entries.size} entries", color = DarkMuted, fontSize = 11.sp)
+                Spacer(Modifier.width(12.dp))
+                if (errorCount > 0) Text("$errorCount ERR", color = Color.Red, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                if (warnCount > 0) { Spacer(Modifier.width(8.dp)); Text("$warnCount WARN", color = Color(0xFFFFA726), fontSize = 11.sp) }
+                Spacer(Modifier.weight(1f))
+                // Filter chips
+                listOf(null to "ALL", AppLog.Level.ERROR to "ERR", AppLog.Level.WARN to "WARN", AppLog.Level.INFO to "INFO").forEach { (lvl, lbl) ->
+                    val selected = filterLevel == lvl
+                    Surface(
+                        onClick = { filterLevel = if (selected) null else lvl },
+                        shape = MaterialTheme.shapes.small,
+                        color = if (selected) AccentBlue else DarkSurface2,
+                        modifier = Modifier.padding(start = 4.dp)
+                    ) { Text(lbl, Modifier.padding(horizontal = 8.dp, vertical = 3.dp), color = Color.White, fontSize = 10.sp) }
+                }
+            }
+
+            if (shown.isEmpty()) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(if (entries.isEmpty()) "No log entries yet.\nErrors and sync events will appear here." else "No entries match filter.",
+                        color = DarkMuted, fontSize = 13.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                }
+            } else {
+                LazyColumn(Modifier.fillMaxSize()) {
+                    items(shown) { entry ->
+                        val levelColor = when (entry.level) {
+                            AppLog.Level.ERROR -> Color.Red
+                            AppLog.Level.WARN  -> Color(0xFFFFA726)
+                            AppLog.Level.INFO  -> AccentGood
+                            AppLog.Level.DEBUG -> DarkMuted
+                        }
+                        val isExpanded = expandedEntry == entry
+                        Surface(
+                            onClick = { expandedEntry = if (isExpanded) null else entry },
+                            color = if (isExpanded) DarkSurface2 else Color.Transparent,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(Modifier.padding(horizontal = 12.dp, vertical = 6.dp)) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(entry.timeStr, color = DarkMuted, fontSize = 9.sp, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace, modifier = Modifier.width(72.dp))
+                                    Text(entry.level.name.take(4), color = levelColor, fontSize = 9.sp, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace, fontWeight = FontWeight.Bold, modifier = Modifier.width(36.dp))
+                                    Text("[${entry.tag}]", color = DarkMuted, fontSize = 9.sp, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace, modifier = Modifier.width(72.dp))
+                                    Text(entry.message, color = Color.White, fontSize = 11.sp, modifier = Modifier.weight(1f), maxLines = if (isExpanded) Int.MAX_VALUE else 2, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                                }
+                                if (isExpanded && entry.detail.isNotBlank()) {
+                                    Spacer(Modifier.height(4.dp))
+                                    Text(entry.detail, color = Color(0xFFCFD8DC), fontSize = 10.sp, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                                        modifier = Modifier.fillMaxWidth().background(DarkSurface, MaterialTheme.shapes.small).padding(8.dp))
+                                }
+                            }
+                        }
+                        Divider(color = DarkSurface2, thickness = 0.5.dp)
+                    }
+                }
+            }
         }
     }
 }
