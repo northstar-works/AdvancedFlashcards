@@ -1867,7 +1867,7 @@ fun LoginScreen(nav: NavHostController, repo: Repository) {
                         Spacer(Modifier.width(8.dp))
                         Button({
                             scope.launch {
-                                repo.saveAdminSettings(adminSettings.copy(webAppUrl = serverUrl))
+                                repo.saveAdminSettings(adminSettings.copy(webAppUrl = WebAppSync.normalizeUrl(serverUrl)))
                                 statusMessage = "Server URL saved. You can login now."
                             }
                         }, Modifier.weight(1f)) { Text("Save URL", fontSize = 12.sp) }
@@ -1885,9 +1885,9 @@ fun LoginScreen(nav: NavHostController, repo: Repository) {
                     if (username.isBlank() || password.isBlank()) { statusMessage = "Enter username and password"; return@Button }
                     isLoading = true
                     scope.launch {
-                        val result = repo.syncLogin(username, password, serverUrl)
+                        val result = repo.syncLogin(username, password, WebAppSync.normalizeUrl(serverUrl))
                         if (result.success) {
-                            var effectiveUrl = serverUrl.ifBlank { WebAppSync.DEFAULT_SERVER_URL }
+                            var effectiveUrl = WebAppSync.normalizeUrl(serverUrl.ifBlank { WebAppSync.DEFAULT_SERVER_URL })
                             // Pull admin-managed config (if server supports it)
                             val cfg = repo.syncPullServerConfig(result.token, effectiveUrl)
                             if (cfg.success && cfg.managedServerUrl.isNotBlank() && cfg.managedServerUrl != effectiveUrl) {

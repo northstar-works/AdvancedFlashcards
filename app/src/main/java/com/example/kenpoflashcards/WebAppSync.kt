@@ -28,13 +28,31 @@ import java.net.URL
 object WebAppSync {
     
     const val DEFAULT_SERVER_URL = "http://sidscri.tplinkdns.com:8009"
-    
+
+    /**
+     * Ensure a URL has http:// prefix. Strips any existing scheme first so
+     * "sidscri.tplinkdns.com:8009", "http://...", and "https://..." all work.
+     */
+    fun normalizeUrl(url: String): String {
+        val trimmed = url.trim().trimEnd('/')
+        if (trimmed.isBlank()) return DEFAULT_SERVER_URL
+        return when {
+            trimmed.startsWith("http://")  -> trimmed
+            trimmed.startsWith("https://") -> trimmed
+            else -> "http://$trimmed"
+        }
+    }
+
     // Expected server app names for verification
     private val VALID_SERVER_APPS = setOf(
         "AdvancedFlashcardsWebAppServer",
         "AdvancedFlashcardsWebAppServer_Packaged",
         "KenpoFlashcardsWebServer",
-        "KenpoFlashcardsWebServer_Packaged"
+        "KenpoFlashcardsWebServer_Packaged",
+        // Space-separated variants (version.json "name" field)
+        "Advanced Flashcards WebAppServer",
+        "Advanced Flashcards WebAppServer Packaged",
+        "Advanced Flashcards WebServer"
     )
     
     data class LoginResult(
@@ -58,7 +76,7 @@ object WebAppSync {
      */
     suspend fun verifyServer(serverUrl: String): SyncResult = withContext(Dispatchers.IO) {
         try {
-            val url = URL("${serverUrl.trimEnd('/')}/api/version")
+            val url = URL("${normalizeUrl(serverUrl)}/api/version")
             val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "GET"
             conn.connectTimeout = 8000
@@ -95,8 +113,9 @@ object WebAppSync {
      */
     suspend fun login(serverUrl: String, username: String, password: String): LoginResult = withContext(Dispatchers.IO) {
         try {
+            val normalizedUrl = normalizeUrl(serverUrl)
             // Verify server identity first
-            val verifyResult = verifyServer(serverUrl)
+            val verifyResult = verifyServer(normalizedUrl)
             if (!verifyResult.success) {
                 return@withContext LoginResult(
                     success = false, 
@@ -105,7 +124,7 @@ object WebAppSync {
                 )
             }
             
-            val url = URL("$serverUrl/api/sync/login")
+            val url = URL("$normalizedUrl/api/sync/login")
             val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "POST"
             conn.setRequestProperty("Content-Type", "application/json")

@@ -4,10 +4,10 @@
 
 ### Added
 - **Remote Config Push:** Admin screen → new "📱 Remote Config Push" section replaces the old single "Server URL" field.
-  - Separate **Host**, **Port**, and **Server Type** (Standalone / Packaged / Raspberry Pi) fields for clarity.
-  - **Push to Apps** button sends config to `POST /api/sync/admin/remote-config`; all Android clients auto-discover the change on next startup/login.
-  - **Pull Current Config from Server** button fetches `GET /api/sync/remote-config` and populates the fields.
-  - Live URL preview updates as you type.
+- **Separate **Host**, **Port**, and **Server Type** (Standalone / Packaged / Raspberry Pi) fields for clarity.
+- **Push to Apps** button sends config to `POST /api/sync/admin/remote-config`; all Android clients auto-discover the change on next startup/login.
+- **Pull Current Config from Server** button fetches `GET /api/sync/remote-config` and populates the fields.
+- **Live URL preview updates as you type.
 - **`RemoteConfig` data class** (`Models.kt`): holds `serverType`, `host`, `port`, `updatedAt`, `updatedBy`; `toBaseUrl()` builds the full HTTP URL.
 - **`WebAppSync.pullRemoteConfig()`**: polls `GET /api/sync/remote-config` (no auth required).
 - **`WebAppSync.pushRemoteConfig()`**: pushes to `POST /api/sync/admin/remote-config` (admin Bearer token).
@@ -15,9 +15,11 @@
 - **`AdminSettings.serverType`** field added (persisted to DataStore); default `"standalone"`.
 
 ### Changed
-- Old "Server URL" text field in Admin screen replaced by the new Remote Config Push section. The previous `syncPushManagedServerUrl` / `syncPullServerConfig` functions remain for backwards compatibility.
+- **Old "Server URL" text field in Admin screen replaced by the new Remote Config Push section. The previous `syncPushManagedServerUrl` / `syncPullServerConfig` functions remain for backwards compatibility.
 
-
+### Fixed
+- **Server URL missing http://** — `Verify Server` and `Login` now work when the URL is entered without a scheme (e.g. `sidscri.tplinkdns.com:8009` or `192.168.0.205:8009`). Added `WebAppSync.normalizeUrl()` which prepends `http://` automatically. Applied to `verifyServer()`, `login()`, the Save URL button, and the login flow.
+- **"Not an Advanced Flashcards server" verify error** — `VALID_SERVER_APPS` now includes the space-separated name variants (`"Advanced Flashcards WebAppServer"` etc.) that the server returns from its `version.json` `name` field. Previously only the old camelCase names without spaces were accepted.
 
 - **Updated bundled Web Server to v8.7.0 (build 60)** (from v8.6.1 build 58), including:
 
