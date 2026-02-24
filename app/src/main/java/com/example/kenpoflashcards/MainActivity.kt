@@ -1936,6 +1936,8 @@ fun LoginScreen(nav: NavHostController, repo: Repository) {
     var isLoading by remember { mutableStateOf(false) }
     var redeemCode by remember { mutableStateOf("") }
     var isFirstLogin by remember { mutableStateOf(false) }
+    // Populated after Verify Server – shows the live install_type from the server
+    var detectedInstallType by remember { mutableStateOf(adminSettings.serverType) }
     
     val isAdmin = AdminUsers.isAdmin(adminSettings.username)
     val adminLabel = if (isAdmin) " (Admin)" else ""
@@ -1981,6 +1983,11 @@ fun LoginScreen(nav: NavHostController, repo: Repository) {
                                 scope.launch {
                                     val result = WebAppSync.verifyServer(serverUrl.ifBlank { WebAppSync.DEFAULT_SERVER_URL })
                                     verifyStatus = if (result.success) "✅ ${result.message}" else "❌ ${result.error}"
+                                    if (result.success && result.installType.isNotBlank()) {
+                                        detectedInstallType = result.installType
+                                        // Persist so it shows next time
+                                        repo.saveAdminSettings(adminSettings.copy(serverType = result.installType))
+                                    }
                                     isVerifying = false
                                 }
                             },
@@ -2003,6 +2010,31 @@ fun LoginScreen(nav: NavHostController, repo: Repository) {
                     }
                     if (verifyStatus.isNotBlank()) {
                         Text(verifyStatus, fontSize = 11.sp, color = if (verifyStatus.startsWith("✅")) AccentGood else Color.Red)
+                    }
+                    // ── Server Type Badge ──────────────────────────────────
+                    Spacer(Modifier.height(6.dp))
+                    val typeLabel = RemoteConfig(serverType = detectedInstallType).serverTypeLabel
+                    val typeIcon  = RemoteConfig(serverType = detectedInstallType).serverTypeIcon
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("Server type: ", fontSize = 11.sp, color = DarkMuted)
+                        Surface(
+                            shape = MaterialTheme.shapes.small,
+                            color = when (detectedInstallType) {
+                                "docker"   -> Color(0xFF0B3D91)
+                                "rpi"      -> Color(0xFF6A1B00)
+                                "packaged" -> Color(0xFF1A3A1A)
+                                else       -> Color(0xFF1C2A3A)
+                            },
+                            modifier = Modifier.padding(start = 4.dp)
+                        ) {
+                            Text(
+                                "$typeIcon $typeLabel",
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                fontSize = 11.sp,
+                                color = Color.White,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
                     }
                     Spacer(Modifier.height(8.dp))
                 }

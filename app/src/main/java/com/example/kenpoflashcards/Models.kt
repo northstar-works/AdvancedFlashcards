@@ -122,7 +122,7 @@ data class TermBreakdown(
  * Added: v7.1.0 – Remote Config Push feature.
  */
 data class RemoteConfig(
-    /** "standalone" | "packaged" | "rpi" */
+    /** "standalone" | "packaged" | "rpi" | "docker" */
     val serverType: String = "standalone",
     /** Hostname or IP without scheme (e.g. "sidscri.tplinkdns.com" or "192.168.1.50") */
     val host: String = "sidscri.tplinkdns.com",
@@ -143,12 +143,21 @@ data class RemoteConfig(
         get() = when (serverType) {
             "packaged" -> "Packaged (Windows EXE)"
             "rpi"      -> "Raspberry Pi"
+            "docker"   -> "Docker Container"
             else       -> "Standalone"
+        }
+
+    val serverTypeIcon: String
+        get() = when (serverType) {
+            "packaged" -> "📦"
+            "rpi"      -> "🍓"
+            "docker"   -> "🐳"
+            else       -> "🖥️"
         }
 
     companion object {
         val DEFAULT = RemoteConfig()
-        val VALID_SERVER_TYPES = listOf("standalone", "packaged", "rpi")
+        val VALID_SERVER_TYPES = listOf("standalone", "packaged", "rpi", "docker")
     }
 }
 

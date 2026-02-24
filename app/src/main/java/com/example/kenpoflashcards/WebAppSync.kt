@@ -52,7 +52,11 @@ object WebAppSync {
         // Space-separated variants (version.json "name" field)
         "Advanced Flashcards WebAppServer",
         "Advanced Flashcards WebAppServer Packaged",
-        "Advanced Flashcards WebServer"
+        "Advanced Flashcards WebServer",
+        // Standalone / Docker server name returned by app.py default
+        "WebAppServer",
+        "KenpoFlashcardsWebAppServer",
+        "Advanced Flashcards WebApp Server"
     )
     
     data class LoginResult(
@@ -67,7 +71,9 @@ object WebAppSync {
     data class SyncResult(
         val success: Boolean,
         val message: String = "",
-        val error: String = ""
+        val error: String = "",
+        /** install_type returned by /api/version (populated by verifyServer) */
+        val installType: String = ""
     )
     
     /**
@@ -97,7 +103,7 @@ object WebAppSync {
             if (appName !in VALID_SERVER_APPS) {
                 return@withContext SyncResult(false, error = "Unknown server: $appName")
             }
-            SyncResult(true, message = "$appName v$version ($installType)")
+            SyncResult(true, message = "$appName v$version ($installType)", installType = installType)
         } catch (e: java.net.ConnectException) {
             SyncResult(false, error = "Cannot connect to server")
         } catch (e: java.net.SocketTimeoutException) {
