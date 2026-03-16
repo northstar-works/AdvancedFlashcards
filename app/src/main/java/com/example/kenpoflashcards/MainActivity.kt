@@ -2498,6 +2498,12 @@ fun ManageDecksScreen(nav: NavHostController, repo: Repository) {
     var uploadedFileName by remember { mutableStateOf("") }
     var uploadedCreateMethod by remember { mutableStateOf("") }  // Track which method the file was selected for
     var selectedDocumentUri by remember { mutableStateOf<Uri?>(null) }
+    var jsonImportPreviewDeckName by remember { mutableStateOf("") }
+    var jsonImportPreviewCards by remember { mutableStateOf<List<AiGeneratedTerm>>(emptyList()) }
+    val isSelectedJsonDocument =
+        uploadedFileName.isNotBlank() &&
+        uploadedCreateMethod == "upload_document" &&
+        uploadedFileName.lowercase().endsWith(".json")
     
     // File picker launchers
     val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -3478,7 +3484,6 @@ fun ManageDecksScreen(nav: NavHostController, repo: Repository) {
                             "upload_document" -> {
                                 Text("Upload Document", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.White)
                                 Spacer(Modifier.height(8.dp))
-                                val isSelectedJsonDocument = uploadedFileName.isNotBlank() && uploadedCreateMethod == "upload_document" && uploadedFileName.lowercase().endsWith(".json")
                                 Text("Supported: JSON (.json), PDF, Word (.docx), Text (.txt), CSV, Excel (.xlsx)", color = DarkMuted, fontSize = 11.sp)
                                 Spacer(Modifier.height(12.dp))
 
