@@ -33,6 +33,21 @@ jobs:
           keytool -list -keystore release.keystore -storetype PKCS12 -storepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >/dev/null
           echo "Keystore opens OK."
 
+      - name: Convert keystore PKCS12 → JKS
+          run: |
+            keytool -importkeystore \
+              -srckeystore release.keystore \
+              -srcstoretype PKCS12 \
+              -srcstorepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+              -destkeystore release-jks.keystore \
+              -deststoretype JKS \
+              -deststorepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+              -srcalias "${{ secrets.ANDROID_KEY_ALIAS }}" \
+              -destalias "${{ secrets.ANDROID_KEY_ALIAS }}" \
+              -noprompt
+            ls -la release-jks.keystore
+            echo "Conversion OK"
+
       # Workaround for "Permission denied" executing Gradle distribution downloaded by the wrapper.
       - name: Build release APK (no-wrapper exec workaround)
         run: |
