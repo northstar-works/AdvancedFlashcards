@@ -1,6 +1,12 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 
+rem ============================================================
+rem 2_preflight_compile_release_clean.bat
+rem Advanced Flashcards — Northstar Works
+rem - Full clean then Kotlin compile check
+rem ============================================================
+
 set "PROJ_DIR=%~dp0"
 if "%PROJ_DIR:~-1%"=="\" set "PROJ_DIR=%PROJ_DIR:~0,-1%"
 
@@ -14,7 +20,7 @@ if not exist "%LOG_DIR%" mkdir "%LOG_DIR%" >nul 2>&1
 for /f %%i in ('powershell -NoProfile -Command "Get-Date -Format yyyyMMdd_HHmmss"') do set "TS=%%i"
 set "LOG=%LOG_DIR%\compile_release_clean_%TS%.log"
 
-call :banner "Compile Release Kotlin (CLEAN)"
+call :banner "Advanced Flashcards — Compile Release Kotlin (CLEAN)"
 call :progress 10 "gradlew --version"
 call :run ".\gradlew.bat --version" || goto :fail
 

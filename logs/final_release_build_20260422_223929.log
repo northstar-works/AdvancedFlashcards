@@ -1,0 +1,16 @@
+============================================================
+FINAL Release Build (APK + AAB)
+Started: Wed 04/22/2026 22:39:29.67
+Folder : C:\Users\Sidscri\Documents\GitHub\AdvancedFlashcards
+Output : C:\Users\Sidscri\Documents\GitHub\AdvancedFlashcards\output\release
+Log    : C:\Users\Sidscri\Documents\GitHub\AdvancedFlashcards\logs\final_release_build_20260422_223929.log
+============================================================
+[PROGRESS] 10% - gradlew --version
+
+------------------------------------------------------------
+[Wed 04/22/2026 22:39:29.74] CMD: .\gradlew.bat --version
+------------------------------------------------------------
+Error: Could not find or load main class org.gradle.wrapper.GradleWrapperMain
+Caused by: java.lang.ClassNotFoundException: org.gradle.wrapper.GradleWrapperMain
+[ExitCode=1]
+[PROGRESS] 100% - FAILED

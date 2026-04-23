@@ -1,6 +1,12 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 
+rem ============================================================
+rem 3_final_release_build.bat
+rem Advanced Flashcards — Northstar Works
+rem - Full clean build: APK + AAB output to .\output\release
+rem ============================================================
+
 set "PROJ_DIR=%~dp0"
 if "%PROJ_DIR:~-1%"=="\" set "PROJ_DIR=%PROJ_DIR:~0,-1%"
 
@@ -17,7 +23,7 @@ set "LOG=%LOG_DIR%\final_release_build_%TS%.log"
 set "OUT_DIR=%PROJ_DIR%\output\release"
 if not exist "%OUT_DIR%" mkdir "%OUT_DIR%" >nul 2>&1
 
-call :banner "FINAL Release Build (APK + AAB)"
+call :banner "Advanced Flashcards — FINAL Release Build (APK + AAB)"
 call :progress 10 "gradlew --version"
 call :run ".\gradlew.bat --version" || goto :fail
 

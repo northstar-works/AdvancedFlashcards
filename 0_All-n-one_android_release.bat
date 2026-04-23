@@ -2,7 +2,8 @@
 setlocal EnableExtensions EnableDelayedExpansion
 
 rem ============================================================
-rem preflight_android_release.bat
+rem 0_All-n-one_android_release.bat
+rem Advanced Flashcards — Northstar Works
 rem - Runs a clean, reproducible "GitHub-like" preflight locally
 rem - Shows clean progress to console
 rem - Writes full logs to .\logs\preflight_release_YYYYMMDD_HHMMSS.log
@@ -22,7 +23,7 @@ set "TS=%TS: =0%"
 set "MASTER_LOG=%LOG_DIR%\preflight_release_%TS%.log"
 
 call :log "============================================================"
-call :log "Preflight Release Build"
+call :log "Advanced Flashcards — Preflight Release Build"
 call :log "Started: %date% %time%"
 call :log "Folder : %PROJ_DIR%"
 call :log "Log    : %MASTER_LOG%"
