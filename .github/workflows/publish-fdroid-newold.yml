@@ -91,6 +91,7 @@ jobs:
 
           "$APKSIGNER" sign \
             --ks release.keystore \
+            --ks-type PKCS12 \
             --ks-key-alias "${{ secrets.ANDROID_KEY_ALIAS }}" \
             --ks-pass pass:"${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
             --key-pass pass:"${{ secrets.ANDROID_KEY_PASSWORD }}" \
@@ -116,17 +117,16 @@ jobs:
 
           mkdir -p repo
           cp ../app-release.apk repo/
-          cp ../release.keystore keystore.p12
+          cp ../release.keystore keystore.jks
 
           cat > config.yml << EOF
           repo_url: https://northstar-works.github.io/AdvancedFlashcards/repo
           repo_name: Advanced Flashcards
           repo_description: "Official F-Droid repository for Advanced Flashcards by Northstar Works."
           repo_keyalias: ${ANDROID_KEY_ALIAS}
-          keystore: keystore.p12
+          keystore: keystore.jks
           keystorepass: ${ANDROID_KEYSTORE_PASSWORD}
           keypass: ${ANDROID_KEY_PASSWORD}
-          keystore_type: PKCS12
           EOF
 
           fdroid update --create-metadata || true

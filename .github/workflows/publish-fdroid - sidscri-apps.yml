@@ -26,20 +26,20 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Decode keystore (PKCS12)
+      - name: Decode keystore (JKS)
         run: |
           echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | tr -d '\n' | base64 -d > release.keystore
           ls -la release.keystore
-          keytool -list -keystore release.keystore -storetype PKCS12 -storepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >/dev/null
+          keytool -list -keystore release.keystore -storetype JKS -storepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >/dev/null
           echo "Keystore opens OK."
 
       # Workaround for "Permission denied" executing Gradle distribution downloaded by the wrapper.
       - name: Build release APK (no-wrapper exec workaround)
         run: |
-          WRAPPER_PROPS="./gradle/wrapper/gradle-wrapper.properties"
+          WRAPPER_PROPS="KenpoFlashcardsProject-v2/gradle/wrapper/gradle-wrapper.properties"
           if [ ! -f "$WRAPPER_PROPS" ]; then
             echo "Missing $WRAPPER_PROPS"
-            ls -la ./gradle/wrapper || true
+            ls -la KenpoFlashcardsProject-v2/gradle/wrapper || true
             exit 1
           fi
 
@@ -59,9 +59,10 @@ jobs:
           fi
 
           echo "Using GRADLE_HOME=$GRADLE_HOME"
-          bash "$GRADLE_HOME/bin/gradle" -p . assembleRelease
+          bash "$GRADLE_HOME/bin/gradle" -p KenpoFlashcardsProject-v2 assembleRelease
 
       - name: Find APK to sign
+        working-directory: KenpoFlashcardsProject-v2
         run: |
           echo "APK outputs (release):"
           find app/build/outputs/apk/release -type f -name "*.apk" -print
@@ -80,6 +81,7 @@ jobs:
           echo "APK_IN=$APK_IN" >> $GITHUB_ENV
 
       - name: Sign APK (apksigner)
+        working-directory: KenpoFlashcardsProject-v2
         run: |
           BUILD_TOOLS=$(ls "$ANDROID_SDK_ROOT/build-tools" | sort -V | tail -n 1)
           APKSIGNER="$ANDROID_SDK_ROOT/build-tools/$BUILD_TOOLS/apksigner"
@@ -87,15 +89,9 @@ jobs:
           echo "Using apksigner: $APKSIGNER"
           echo "Input APK: $APK_IN"
 
-          APK_OUT="app-release.apk"
+          APK_OUT="../app-release.apk"
 
-          "$APKSIGNER" sign \
-            --ks release.keystore \
-            --ks-key-alias "${{ secrets.ANDROID_KEY_ALIAS }}" \
-            --ks-pass pass:"${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
-            --key-pass pass:"${{ secrets.ANDROID_KEY_PASSWORD }}" \
-            --out "$APK_OUT" \
-            "$APK_IN"
+          "$APKSIGNER" sign             --ks ../release.keystore             --ks-type JKS             --ks-key-alias "${{ secrets.ANDROID_KEY_ALIAS }}"             --ks-pass pass:"${{ secrets.ANDROID_KEYSTORE_PASSWORD }}"             --key-pass pass:"${{ secrets.ANDROID_KEY_PASSWORD }}"             --out "$APK_OUT"             "$APK_IN"
 
           "$APKSIGNER" verify "$APK_OUT"
           ls -la "$APK_OUT"
@@ -116,17 +112,16 @@ jobs:
 
           mkdir -p repo
           cp ../app-release.apk repo/
-          cp ../release.keystore keystore.p12
+          cp ../release.keystore keystore.jks
 
           cat > config.yml << EOF
-          repo_url: https://northstar-works.github.io/AdvancedFlashcards/repo
-          repo_name: Advanced Flashcards
-          repo_description: "Official F-Droid repository for Advanced Flashcards by Northstar Works."
+          repo_url: https://sidscri.github.io/sidscri-apps/repo
+          repo_name: Sidscri Apps
+          repo_description: "Repo for my personal apps."
           repo_keyalias: ${ANDROID_KEY_ALIAS}
-          keystore: keystore.p12
+          keystore: keystore.jks
           keystorepass: ${ANDROID_KEYSTORE_PASSWORD}
           keypass: ${ANDROID_KEY_PASSWORD}
-          keystore_type: PKCS12
           EOF
 
           fdroid update --create-metadata || true
@@ -145,7 +140,7 @@ jobs:
           <head>
               <meta charset="utf-8">
               <meta name="viewport" content="width=device-width, initial-scale=1">
-              <title>Advanced Flashcards - F-Droid Repo</title>
+              <title>Sidscri Apps - F-Droid Repo</title>
               <style>
                   * { box-sizing: border-box; }
                   body {
@@ -220,19 +215,19 @@ jobs:
               </style>
           </head>
           <body>
-              <h1>🥋 Advanced Flashcards</h1>
-              <p class="subtitle">by Northstar Works</p>
+              <h1>🥋 Sidscri Apps</h1>
+              <p class="subtitle">Personal F-Droid Repository</p>
 
               <div class="card">
                   <h2>📱 Add to F-Droid</h2>
                   <p>Scan this QR code with F-Droid to add the repository:</p>
-
+                  
                   <div class="qr-container">
-                      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fnorthstar-works.github.io%2FAdvancedFlashcards%2Frepo" alt="QR Code for F-Droid Repo">
+                      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fsidscri.github.io%2Fsidscri-apps%2Frepo" alt="QR Code for F-Droid Repo">
                   </div>
 
                   <p>Or copy the repository URL:</p>
-                  <div class="repo-url" id="repoUrl">https://northstar-works.github.io/AdvancedFlashcards/repo</div>
+                  <div class="repo-url" id="repoUrl">https://sidscri.github.io/sidscri-apps/repo</div>
                   <button class="copy-btn" onclick="copyUrl()">📋 Copy URL</button>
               </div>
 
@@ -253,7 +248,7 @@ jobs:
                   <div class="app-item">
                       <div class="app-icon">🥋</div>
                       <div class="app-info">
-                          <h3>Advanced Flashcards</h3>
+                          <h3>Kenpo Flashcards</h3>
                           <p>Study martial arts terminology with flashcards. Features include term breakdowns, progress tracking, and text-to-speech.</p>
                       </div>
                   </div>
