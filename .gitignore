@@ -71,3 +71,4 @@ yarn-error.log*
 
 # Allow PyInstaller spec files for Kenpo packaging
 !KenpoFlashcardsWebServer_Packaged_in_exe_msi/packaging/pyinstaller/*.spec
+*.lock
