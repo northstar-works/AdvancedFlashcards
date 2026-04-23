@@ -33,7 +33,7 @@ jobs:
           keytool -list -keystore release.keystore -storetype PKCS12 -storepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >/dev/null
           echo "Keystore opens OK."
 
-- name: Convert keystore PKCS12 → JKS
+- name: Convert keystore PKCS12 to JKS
         run: |
           keytool -importkeystore \
             -srckeystore release.keystore \
