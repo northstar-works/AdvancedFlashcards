@@ -33,7 +33,7 @@ jobs:
           keytool -list -keystore release.keystore -storetype PKCS12 -storepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >/dev/null
           echo "Keystore opens OK."
 
-      - name: Convert keystore PKCS12 to JKS
+- name: Convert keystore PKCS12 → JKS
         run: |
           keytool -importkeystore \
             -srckeystore release.keystore \
@@ -42,8 +42,8 @@ jobs:
             -destkeystore release-jks.keystore \
             -deststoretype JKS \
             -deststorepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
-            -srcalias "${{ secrets.ANDROID_KEY_ALIAS }}" \
-            -destalias "${{ secrets.ANDROID_KEY_ALIAS }}" \
+            -srcalias "advancedflashcards" \
+            -destalias "advancedflashcards" \
             -noprompt
           ls -la release-jks.keystore
           echo "Conversion OK"
@@ -105,9 +105,8 @@ jobs:
           APK_OUT="app-release.apk"
 
           "$APKSIGNER" sign \
-            --ks release-jks.keystore \
-            --ks-type JKS \
-            --ks-key-alias "${{ secrets.ANDROID_KEY_ALIAS }}" \
+            --ks release.keystore \
+            --ks-key-alias "advancedflashcards" \
             --ks-pass pass:"${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
             --key-pass pass:"${{ secrets.ANDROID_KEY_PASSWORD }}" \
             --out "$APK_OUT" \
@@ -132,16 +131,17 @@ jobs:
 
           mkdir -p repo
           cp ../app-release.apk repo/
-          cp ../release-jks.keystore keystore.jks
+          cp ../release.keystore keystore.p12
 
           cat > config.yml << EOF
           repo_url: https://northstar-works.github.io/AdvancedFlashcards/repo
           repo_name: Advanced Flashcards
           repo_description: "Official F-Droid repository for Advanced Flashcards by Northstar Works."
-          repo_keyalias: ${ANDROID_KEY_ALIAS}
-          keystore: keystore.jks
+          repo_keyalias: advancedflashcards
+          keystore: keystore.p12
           keystorepass: ${ANDROID_KEYSTORE_PASSWORD}
           keypass: ${ANDROID_KEY_PASSWORD}
+          keystore_type: PKCS12
           EOF
 
           fdroid update --create-metadata || true
