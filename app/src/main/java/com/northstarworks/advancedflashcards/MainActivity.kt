@@ -1,4 +1,4 @@
-package com.example.kenpoflashcards
+package com.northstarworks.advancedflashcards
 
 
 import android.content.res.Configuration

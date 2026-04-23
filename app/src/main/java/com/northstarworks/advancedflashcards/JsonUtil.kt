@@ -1,4 +1,4 @@
-package com.example.kenpoflashcards
+package com.northstarworks.advancedflashcards
 
 import org.json.JSONArray
 import org.json.JSONObject

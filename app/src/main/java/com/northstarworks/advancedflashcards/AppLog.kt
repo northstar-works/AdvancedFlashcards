@@ -1,4 +1,4 @@
-package com.example.kenpoflashcards
+package com.northstarworks.advancedflashcards
 
 import java.text.SimpleDateFormat
 import java.util.Date

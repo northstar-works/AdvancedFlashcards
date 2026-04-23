@@ -1,4 +1,4 @@
-package com.example.kenpoflashcards
+package com.northstarworks.advancedflashcards
 
 enum class SortMode(val label: String) {
     JSON_ORDER("Original order"),

@@ -1,4 +1,4 @@
-package com.example.kenpoflashcards
+package com.northstarworks.advancedflashcards
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

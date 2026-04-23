@@ -1,4 +1,4 @@
-package com.example.kenpoflashcards
+package com.northstarworks.advancedflashcards
 
 /**
  * Card status enum - now includes Unsure state from web app
