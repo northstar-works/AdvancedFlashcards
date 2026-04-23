@@ -12,6 +12,7 @@ build/
 **/outputs/
 **/*.apk
 **/*.aab
+*.lock
 # ---------- Android Studio / IntelliJ ----------
 .idea/
 *.iml
