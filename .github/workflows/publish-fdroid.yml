@@ -116,13 +116,20 @@ jobs:
           "$APKSIGNER" verify "$APK_OUT"
           ls -la "$APK_OUT"
 
+      - name: Cache apt packages
+        uses: actions/cache@v4
+        with:
+          path: /var/cache/apt/archives
+          key: apt-fdroidserver-${{ runner.os }}-v1
+          restore-keys: apt-fdroidserver-${{ runner.os }}-
+
       - name: Build F-Droid repo index (signed)
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           sudo apt-get update
-          sudo apt-get install -y fdroidserver
+          sudo apt-get install -y --no-upgrade fdroidserver
 
           rm -rf fdroidwork
           mkdir -p fdroidwork

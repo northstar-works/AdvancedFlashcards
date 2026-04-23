@@ -1,0 +1,1185 @@
+============================================================
+Advanced Flashcards — FINAL Release Build (APK + AAB)
+Started: Thu 04/23/2026  1:31:02.63
+Folder : C:\Users\Sidscri\Documents\GitHub\AdvancedFlashcards
+Output : C:\Users\Sidscri\Documents\GitHub\AdvancedFlashcards\output\release
+Log    : C:\Users\Sidscri\Documents\GitHub\AdvancedFlashcards\logs\final_release_build_20260423_013102.log
+============================================================
+[PROGRESS] 10% - gradlew --version
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:31:02.70] CMD: .\gradlew.bat --version
+------------------------------------------------------------
+
+------------------------------------------------------------
+Gradle 8.7
+------------------------------------------------------------
+
+Build time:   2024-03-22 15:52:46 UTC
+Revision:     650af14d7653aa949fce5e886e685efc9cf97c10
+
+Kotlin:       1.9.22
+Groovy:       3.0.17
+Ant:          Apache Ant(TM) version 1.10.13 compiled on January 4 2023
+JVM:          17.0.17 (Eclipse Adoptium 17.0.17+10)
+OS:           Windows 10 10.0 amd64
+
+[ExitCode=0]
+[PROGRESS] 25% - clean
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:31:04.20] CMD: .\gradlew.bat clean
+------------------------------------------------------------
+> Task :app:clean
+
+BUILD SUCCESSFUL in 3s
+1 actionable task: 1 executed
+[ExitCode=0]
+[PROGRESS] 45% - compileReleaseKotlin
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:31:08.90] CMD: .\gradlew.bat :app:compileReleaseKotlin --stacktrace
+------------------------------------------------------------
+WARNING: We recommend using a newer Android Gradle plugin to use compileSdk = 35
+
+This Android Gradle plugin (8.5.2) was tested up to compileSdk = 34.
+
+You are strongly encouraged to update your project to use a newer
+Android Gradle plugin that has been tested with compileSdk = 35.
+
+If you are already using the latest version of the Android Gradle plugin,
+you may need to wait until a newer version with support for compileSdk = 35 is available.
+
+For more information refer to the compatibility table:
+https://d.android.com/r/tools/api-level-support
+
+To suppress this warning, add/update
+    android.suppressUnsupportedCompileSdk=35
+to this project's gradle.properties.
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:generateReleaseResValues
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:checkReleaseAarMetadata
+> Task :app:generateReleaseResources
+> Task :app:packageReleaseResources
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksRelease
+> Task :app:parseReleaseLocalResources
+> Task :app:processReleaseMainManifest
+> Task :app:processReleaseManifest
+> Task :app:processReleaseManifestForPackage
+> Task :app:mergeReleaseResources
+> Task :app:processReleaseResources
+> Task :app:compileReleaseKotlin
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:158:59 'Help: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Help
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:160:59 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:167:59 'Help: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Help
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:169:59 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:242:55 Parameter 'landscape' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:325:5 Parameter 'showSearch' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:379:104 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:515:138 Unnecessary safe call on a non-null receiver of type FlashCard?
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:515:163 Unnecessary safe call on a non-null receiver of type FlashCard?
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:515:256 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:679:257 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:717:9 Variable 'landscape' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:795:9 Variable 'progress' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:929:275 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:991:261 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1050:21 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1131:9 Variable 'csvLauncher' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1289:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1302:92 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1730:13 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1767:92 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1842:25 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1862:209 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1932:36 'MenuBook: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.MenuBook
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1965:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1973:209 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1997:40 'Logout: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Logout
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2139:40 'Login: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Login
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2172:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2179:217 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2196:106 'Login: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Login
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2336:214 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2457:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2561:92 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2824:78 Parameter 'idx' is never used, could be renamed to _
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Repository.kt:37:35 Condition 'it.deckId == null' is always 'false'
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Repository.kt:364:37 Unnecessary safe call on a non-null receiver of type String
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Repository.kt:385:37 Unnecessary safe call on a non-null receiver of type String
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:305:216 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:366:58 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:366:63 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:367:130 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:367:135 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:687:52 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:687:57 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:691:48 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:691:53 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:710:48 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:710:53 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:712:40 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:712:45 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:322:67 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:725:67 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:729:63 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:822:63 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:824:55 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:923:63 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:925:55 Type mismatch: inferred type is Nothing? but String was expected
+
+BUILD SUCCESSFUL in 48s
+15 actionable tasks: 15 executed
+[ExitCode=0]
+[PROGRESS] 70% - assembleRelease (APK)
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:31:57.86] CMD: .\gradlew.bat :app:assembleRelease --stacktrace
+------------------------------------------------------------
+WARNING: We recommend using a newer Android Gradle plugin to use compileSdk = 35
+
+This Android Gradle plugin (8.5.2) was tested up to compileSdk = 34.
+
+You are strongly encouraged to update your project to use a newer
+Android Gradle plugin that has been tested with compileSdk = 35.
+
+If you are already using the latest version of the Android Gradle plugin,
+you may need to wait until a newer version with support for compileSdk = 35 is available.
+
+For more information refer to the compatibility table:
+https://d.android.com/r/tools/api-level-support
+
+To suppress this warning, add/update
+    android.suppressUnsupportedCompileSdk=35
+to this project's gradle.properties.
+> Task :app:buildKotlinToolingMetadata
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:checkReleaseAarMetadata UP-TO-DATE
+> Task :app:generateReleaseResValues UP-TO-DATE
+> Task :app:mapReleaseSourceSetPaths UP-TO-DATE
+> Task :app:generateReleaseResources UP-TO-DATE
+> Task :app:mergeReleaseResources UP-TO-DATE
+> Task :app:packageReleaseResources UP-TO-DATE
+> Task :app:parseReleaseLocalResources UP-TO-DATE
+> Task :app:createReleaseCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksRelease UP-TO-DATE
+> Task :app:processReleaseMainManifest UP-TO-DATE
+> Task :app:processReleaseManifest UP-TO-DATE
+> Task :app:processReleaseManifestForPackage UP-TO-DATE
+> Task :app:processReleaseResources UP-TO-DATE
+> Task :app:compileReleaseKotlin UP-TO-DATE
+> Task :app:javaPreCompileRelease
+> Task :app:extractProguardFiles
+> Task :app:compileReleaseJavaWithJavac NO-SOURCE
+> Task :app:generateReleaseLintVitalReportModel
+> Task :app:mergeReleaseJniLibFolders
+> Task :app:mergeReleaseNativeLibs
+
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libdatastore_shared_counter.so.
+
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:dexBuilderRelease
+> Task :app:extractReleaseNativeSymbolTables
+> Task :app:desugarReleaseFileDependencies
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:mergeReleaseStartupProfile UP-TO-DATE
+> Task :app:mergeReleaseArtProfile
+> Task :app:mergeReleaseShaders
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseGlobalSynthetics
+> Task :app:mergeReleaseAssets
+> Task :app:compressReleaseAssets
+> Task :app:extractReleaseVersionControlInfo
+> Task :app:processReleaseJavaRes
+> Task :app:collectReleaseDependencies
+> Task :app:sdkReleaseDependencyData
+> Task :app:writeReleaseAppMetadata
+> Task :app:optimizeReleaseResources
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:mergeReleaseJavaResource
+> Task :app:mergeExtDexRelease
+> Task :app:mergeDexRelease
+> Task :app:compileReleaseArtProfile
+> Task :app:packageRelease
+> Task :app:createReleaseApkListingFileRedirect
+> Task :app:lintVitalAnalyzeRelease
+> Task :app:lintVitalReportRelease
+> Task :app:lintVitalRelease
+> Task :app:assembleRelease
+
+BUILD SUCCESSFUL in 45s
+48 actionable tasks: 33 executed, 15 up-to-date
+[ExitCode=0]
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:32:44.68] CMD: .\gradlew.bat clean
+------------------------------------------------------------
+> Task :app:clean
+
+BUILD SUCCESSFUL in 3s
+1 actionable task: 1 executed
+[ExitCode=0]
+[PROGRESS] 45% - compileReleaseKotlin
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:32:49.17] CMD: .\gradlew.bat :app:compileReleaseKotlin --stacktrace
+------------------------------------------------------------
+WARNING: We recommend using a newer Android Gradle plugin to use compileSdk = 35
+
+This Android Gradle plugin (8.5.2) was tested up to compileSdk = 34.
+
+You are strongly encouraged to update your project to use a newer
+Android Gradle plugin that has been tested with compileSdk = 35.
+
+If you are already using the latest version of the Android Gradle plugin,
+you may need to wait until a newer version with support for compileSdk = 35 is available.
+
+For more information refer to the compatibility table:
+https://d.android.com/r/tools/api-level-support
+
+To suppress this warning, add/update
+    android.suppressUnsupportedCompileSdk=35
+to this project's gradle.properties.
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:generateReleaseResValues
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:checkReleaseAarMetadata
+> Task :app:generateReleaseResources
+> Task :app:packageReleaseResources
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksRelease
+> Task :app:parseReleaseLocalResources
+> Task :app:processReleaseMainManifest
+> Task :app:processReleaseManifest
+> Task :app:processReleaseManifestForPackage
+> Task :app:mergeReleaseResources
+> Task :app:processReleaseResources
+> Task :app:compileReleaseKotlin
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:158:59 'Help: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Help
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:160:59 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:167:59 'Help: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Help
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:169:59 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:242:55 Parameter 'landscape' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:325:5 Parameter 'showSearch' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:379:104 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:515:138 Unnecessary safe call on a non-null receiver of type FlashCard?
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:515:163 Unnecessary safe call on a non-null receiver of type FlashCard?
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:515:256 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:679:257 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:717:9 Variable 'landscape' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:795:9 Variable 'progress' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:929:275 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:991:261 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1050:21 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1131:9 Variable 'csvLauncher' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1289:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1302:92 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1730:13 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1767:92 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1842:25 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1862:209 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1932:36 'MenuBook: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.MenuBook
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1965:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1973:209 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1997:40 'Logout: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Logout
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2139:40 'Login: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Login
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2172:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2179:217 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2196:106 'Login: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Login
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2336:214 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2457:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2561:92 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2824:78 Parameter 'idx' is never used, could be renamed to _
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Repository.kt:37:35 Condition 'it.deckId == null' is always 'false'
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Repository.kt:364:37 Unnecessary safe call on a non-null receiver of type String
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Repository.kt:385:37 Unnecessary safe call on a non-null receiver of type String
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:305:216 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:366:58 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:366:63 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:367:130 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:367:135 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:687:52 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:687:57 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:691:48 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:691:53 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:710:48 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:710:53 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:712:40 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:712:45 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:322:67 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:725:67 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:729:63 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:822:63 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:824:55 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:923:63 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:925:55 Type mismatch: inferred type is Nothing? but String was expected
+
+BUILD SUCCESSFUL in 40s
+15 actionable tasks: 15 executed
+[ExitCode=0]
+[PROGRESS] 70% - assembleRelease (APK)
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:33:30.31] CMD: .\gradlew.bat :app:assembleRelease --stacktrace
+------------------------------------------------------------
+WARNING: We recommend using a newer Android Gradle plugin to use compileSdk = 35
+
+This Android Gradle plugin (8.5.2) was tested up to compileSdk = 34.
+
+You are strongly encouraged to update your project to use a newer
+Android Gradle plugin that has been tested with compileSdk = 35.
+
+If you are already using the latest version of the Android Gradle plugin,
+you may need to wait until a newer version with support for compileSdk = 35 is available.
+
+For more information refer to the compatibility table:
+https://d.android.com/r/tools/api-level-support
+
+To suppress this warning, add/update
+    android.suppressUnsupportedCompileSdk=35
+to this project's gradle.properties.
+> Task :app:buildKotlinToolingMetadata
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:checkReleaseAarMetadata UP-TO-DATE
+> Task :app:generateReleaseResValues UP-TO-DATE
+> Task :app:mapReleaseSourceSetPaths UP-TO-DATE
+> Task :app:generateReleaseResources UP-TO-DATE
+> Task :app:mergeReleaseResources UP-TO-DATE
+> Task :app:packageReleaseResources UP-TO-DATE
+> Task :app:parseReleaseLocalResources UP-TO-DATE
+> Task :app:createReleaseCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksRelease UP-TO-DATE
+> Task :app:processReleaseMainManifest UP-TO-DATE
+> Task :app:processReleaseManifest UP-TO-DATE
+> Task :app:processReleaseManifestForPackage UP-TO-DATE
+> Task :app:processReleaseResources UP-TO-DATE
+> Task :app:compileReleaseKotlin UP-TO-DATE
+> Task :app:javaPreCompileRelease
+> Task :app:extractProguardFiles
+> Task :app:compileReleaseJavaWithJavac NO-SOURCE
+> Task :app:generateReleaseLintVitalReportModel
+> Task :app:mergeReleaseJniLibFolders
+> Task :app:mergeReleaseNativeLibs
+
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libdatastore_shared_counter.so.
+
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:dexBuilderRelease
+> Task :app:extractReleaseNativeSymbolTables
+> Task :app:desugarReleaseFileDependencies
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:mergeReleaseStartupProfile UP-TO-DATE
+> Task :app:mergeReleaseArtProfile
+> Task :app:mergeReleaseShaders
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseGlobalSynthetics
+> Task :app:mergeReleaseAssets
+> Task :app:compressReleaseAssets
+> Task :app:extractReleaseVersionControlInfo
+> Task :app:processReleaseJavaRes
+> Task :app:collectReleaseDependencies
+> Task :app:sdkReleaseDependencyData
+> Task :app:writeReleaseAppMetadata
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:optimizeReleaseResources
+> Task :app:mergeReleaseJavaResource
+> Task :app:mergeExtDexRelease
+> Task :app:mergeDexRelease
+> Task :app:compileReleaseArtProfile
+> Task :app:packageRelease
+> Task :app:createReleaseApkListingFileRedirect
+> Task :app:lintVitalAnalyzeRelease
+> Task :app:lintVitalReportRelease
+> Task :app:lintVitalRelease
+> Task :app:assembleRelease
+
+BUILD SUCCESSFUL in 34s
+48 actionable tasks: 33 executed, 15 up-to-date
+[ExitCode=0]
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:34:06.02] CMD: .\gradlew.bat clean
+------------------------------------------------------------
+> Task :app:clean
+
+BUILD SUCCESSFUL in 15s
+1 actionable task: 1 executed
+[ExitCode=0]
+[PROGRESS] 45% - compileReleaseKotlin
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:34:22.73] CMD: .\gradlew.bat :app:compileReleaseKotlin --stacktrace
+------------------------------------------------------------
+WARNING: We recommend using a newer Android Gradle plugin to use compileSdk = 35
+
+This Android Gradle plugin (8.5.2) was tested up to compileSdk = 34.
+
+You are strongly encouraged to update your project to use a newer
+Android Gradle plugin that has been tested with compileSdk = 35.
+
+If you are already using the latest version of the Android Gradle plugin,
+you may need to wait until a newer version with support for compileSdk = 35 is available.
+
+For more information refer to the compatibility table:
+https://d.android.com/r/tools/api-level-support
+
+To suppress this warning, add/update
+    android.suppressUnsupportedCompileSdk=35
+to this project's gradle.properties.
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:generateReleaseResValues
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:checkReleaseAarMetadata
+> Task :app:generateReleaseResources
+> Task :app:packageReleaseResources
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksRelease
+> Task :app:parseReleaseLocalResources
+> Task :app:processReleaseMainManifest
+> Task :app:processReleaseManifest
+> Task :app:processReleaseManifestForPackage
+> Task :app:mergeReleaseResources
+> Task :app:processReleaseResources
+> Task :app:compileReleaseKotlin
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:158:59 'Help: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Help
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:160:59 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:167:59 'Help: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Help
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:169:59 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:242:55 Parameter 'landscape' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:325:5 Parameter 'showSearch' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:379:104 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:515:138 Unnecessary safe call on a non-null receiver of type FlashCard?
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:515:163 Unnecessary safe call on a non-null receiver of type FlashCard?
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:515:256 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:679:257 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:717:9 Variable 'landscape' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:795:9 Variable 'progress' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:929:275 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:991:261 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1050:21 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1131:9 Variable 'csvLauncher' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1289:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1302:92 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1730:13 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1767:92 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1842:25 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1862:209 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1932:36 'MenuBook: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.MenuBook
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1965:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1973:209 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1997:40 'Logout: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Logout
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2139:40 'Login: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Login
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2172:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2179:217 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2196:106 'Login: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Login
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2336:214 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2457:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2561:92 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2824:78 Parameter 'idx' is never used, could be renamed to _
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Repository.kt:37:35 Condition 'it.deckId == null' is always 'false'
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Repository.kt:364:37 Unnecessary safe call on a non-null receiver of type String
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Repository.kt:385:37 Unnecessary safe call on a non-null receiver of type String
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:305:216 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:366:58 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:366:63 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:367:130 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:367:135 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:687:52 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:687:57 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:691:48 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:691:53 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:710:48 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:710:53 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:712:40 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:712:45 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:322:67 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:725:67 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:729:63 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:822:63 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:824:55 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:923:63 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:925:55 Type mismatch: inferred type is Nothing? but String was expected
+
+BUILD SUCCESSFUL in 37s
+15 actionable tasks: 15 executed
+[ExitCode=0]
+[PROGRESS] 70% - assembleRelease (APK)
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:35:00.79] CMD: .\gradlew.bat :app:assembleRelease --stacktrace
+------------------------------------------------------------
+WARNING: We recommend using a newer Android Gradle plugin to use compileSdk = 35
+
+This Android Gradle plugin (8.5.2) was tested up to compileSdk = 34.
+
+You are strongly encouraged to update your project to use a newer
+Android Gradle plugin that has been tested with compileSdk = 35.
+
+If you are already using the latest version of the Android Gradle plugin,
+you may need to wait until a newer version with support for compileSdk = 35 is available.
+
+For more information refer to the compatibility table:
+https://d.android.com/r/tools/api-level-support
+
+To suppress this warning, add/update
+    android.suppressUnsupportedCompileSdk=35
+to this project's gradle.properties.
+> Task :app:buildKotlinToolingMetadata
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:checkReleaseAarMetadata UP-TO-DATE
+> Task :app:generateReleaseResValues UP-TO-DATE
+> Task :app:mapReleaseSourceSetPaths UP-TO-DATE
+> Task :app:generateReleaseResources UP-TO-DATE
+> Task :app:mergeReleaseResources UP-TO-DATE
+> Task :app:packageReleaseResources UP-TO-DATE
+> Task :app:parseReleaseLocalResources UP-TO-DATE
+> Task :app:createReleaseCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksRelease UP-TO-DATE
+> Task :app:processReleaseMainManifest UP-TO-DATE
+> Task :app:processReleaseManifest UP-TO-DATE
+> Task :app:processReleaseManifestForPackage UP-TO-DATE
+> Task :app:processReleaseResources UP-TO-DATE
+> Task :app:compileReleaseKotlin UP-TO-DATE
+> Task :app:javaPreCompileRelease
+> Task :app:extractProguardFiles
+> Task :app:compileReleaseJavaWithJavac NO-SOURCE
+> Task :app:generateReleaseLintVitalReportModel
+> Task :app:mergeReleaseJniLibFolders
+> Task :app:mergeReleaseNativeLibs
+
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libdatastore_shared_counter.so.
+
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:dexBuilderRelease
+> Task :app:extractReleaseNativeSymbolTables
+> Task :app:desugarReleaseFileDependencies
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:mergeReleaseStartupProfile UP-TO-DATE
+> Task :app:mergeReleaseArtProfile
+> Task :app:mergeReleaseShaders
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseAssets
+> Task :app:compressReleaseAssets
+> Task :app:extractReleaseVersionControlInfo
+> Task :app:mergeReleaseGlobalSynthetics
+> Task :app:processReleaseJavaRes
+> Task :app:collectReleaseDependencies
+> Task :app:sdkReleaseDependencyData
+> Task :app:writeReleaseAppMetadata
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:optimizeReleaseResources
+> Task :app:mergeReleaseJavaResource
+> Task :app:mergeExtDexRelease
+> Task :app:mergeDexRelease
+> Task :app:compileReleaseArtProfile
+> Task :app:packageRelease
+> Task :app:createReleaseApkListingFileRedirect
+> Task :app:lintVitalAnalyzeRelease
+> Task :app:lintVitalReportRelease
+> Task :app:lintVitalRelease
+> Task :app:assembleRelease
+
+BUILD SUCCESSFUL in 42s
+48 actionable tasks: 33 executed, 15 up-to-date
+[ExitCode=0]
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:35:44.40] CMD: .\gradlew.bat clean
+------------------------------------------------------------
+> Task :app:clean
+
+BUILD SUCCESSFUL in 20s
+1 actionable task: 1 executed
+[ExitCode=0]
+[PROGRESS] 45% - compileReleaseKotlin
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:36:06.08] CMD: .\gradlew.bat :app:compileReleaseKotlin --stacktrace
+------------------------------------------------------------
+WARNING: We recommend using a newer Android Gradle plugin to use compileSdk = 35
+
+This Android Gradle plugin (8.5.2) was tested up to compileSdk = 34.
+
+You are strongly encouraged to update your project to use a newer
+Android Gradle plugin that has been tested with compileSdk = 35.
+
+If you are already using the latest version of the Android Gradle plugin,
+you may need to wait until a newer version with support for compileSdk = 35 is available.
+
+For more information refer to the compatibility table:
+https://d.android.com/r/tools/api-level-support
+
+To suppress this warning, add/update
+    android.suppressUnsupportedCompileSdk=35
+to this project's gradle.properties.
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:generateReleaseResValues
+> Task :app:checkReleaseAarMetadata
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:generateReleaseResources
+> Task :app:packageReleaseResources
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksRelease
+> Task :app:parseReleaseLocalResources
+> Task :app:processReleaseMainManifest
+> Task :app:processReleaseManifest
+> Task :app:processReleaseManifestForPackage
+> Task :app:mergeReleaseResources
+> Task :app:processReleaseResources
+> Task :app:compileReleaseKotlin
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:158:59 'Help: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Help
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:160:59 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:167:59 'Help: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Help
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:169:59 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:242:55 Parameter 'landscape' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:325:5 Parameter 'showSearch' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:379:104 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:515:138 Unnecessary safe call on a non-null receiver of type FlashCard?
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:515:163 Unnecessary safe call on a non-null receiver of type FlashCard?
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:515:256 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:679:257 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:717:9 Variable 'landscape' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:795:9 Variable 'progress' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:929:275 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:991:261 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1050:21 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1131:9 Variable 'csvLauncher' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1289:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1302:92 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1730:13 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1767:92 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1842:25 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1862:209 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1932:36 'MenuBook: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.MenuBook
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1965:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1973:209 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1997:40 'Logout: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Logout
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2139:40 'Login: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Login
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2172:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2179:217 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2196:106 'Login: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Login
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2336:214 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2457:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2561:92 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2824:78 Parameter 'idx' is never used, could be renamed to _
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Repository.kt:37:35 Condition 'it.deckId == null' is always 'false'
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Repository.kt:364:37 Unnecessary safe call on a non-null receiver of type String
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Repository.kt:385:37 Unnecessary safe call on a non-null receiver of type String
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:305:216 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:366:58 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:366:63 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:367:130 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:367:135 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:687:52 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:687:57 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:691:48 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:691:53 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:710:48 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:710:53 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:712:40 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:712:45 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:322:67 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:725:67 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:729:63 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:822:63 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:824:55 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:923:63 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:925:55 Type mismatch: inferred type is Nothing? but String was expected
+
+BUILD SUCCESSFUL in 38s
+15 actionable tasks: 15 executed
+[ExitCode=0]
+[PROGRESS] 70% - assembleRelease (APK)
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:36:45.97] CMD: .\gradlew.bat :app:assembleRelease --stacktrace
+------------------------------------------------------------
+WARNING: We recommend using a newer Android Gradle plugin to use compileSdk = 35
+
+This Android Gradle plugin (8.5.2) was tested up to compileSdk = 34.
+
+You are strongly encouraged to update your project to use a newer
+Android Gradle plugin that has been tested with compileSdk = 35.
+
+If you are already using the latest version of the Android Gradle plugin,
+you may need to wait until a newer version with support for compileSdk = 35 is available.
+
+For more information refer to the compatibility table:
+https://d.android.com/r/tools/api-level-support
+
+To suppress this warning, add/update
+    android.suppressUnsupportedCompileSdk=35
+to this project's gradle.properties.
+> Task :app:buildKotlinToolingMetadata
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:checkReleaseAarMetadata UP-TO-DATE
+> Task :app:generateReleaseResValues UP-TO-DATE
+> Task :app:mapReleaseSourceSetPaths UP-TO-DATE
+> Task :app:generateReleaseResources UP-TO-DATE
+> Task :app:mergeReleaseResources UP-TO-DATE
+> Task :app:packageReleaseResources UP-TO-DATE
+> Task :app:parseReleaseLocalResources UP-TO-DATE
+> Task :app:createReleaseCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksRelease UP-TO-DATE
+> Task :app:processReleaseMainManifest UP-TO-DATE
+> Task :app:processReleaseManifest UP-TO-DATE
+> Task :app:processReleaseManifestForPackage UP-TO-DATE
+> Task :app:processReleaseResources UP-TO-DATE
+> Task :app:compileReleaseKotlin UP-TO-DATE
+> Task :app:javaPreCompileRelease
+> Task :app:extractProguardFiles
+> Task :app:compileReleaseJavaWithJavac NO-SOURCE
+> Task :app:generateReleaseLintVitalReportModel
+> Task :app:mergeReleaseJniLibFolders
+> Task :app:mergeReleaseNativeLibs
+
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libdatastore_shared_counter.so.
+
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:dexBuilderRelease
+> Task :app:extractReleaseNativeSymbolTables
+> Task :app:desugarReleaseFileDependencies
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:mergeReleaseStartupProfile UP-TO-DATE
+> Task :app:mergeReleaseArtProfile
+> Task :app:mergeReleaseShaders
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseGlobalSynthetics
+> Task :app:mergeReleaseAssets
+> Task :app:compressReleaseAssets
+> Task :app:extractReleaseVersionControlInfo
+> Task :app:processReleaseJavaRes
+> Task :app:collectReleaseDependencies
+> Task :app:sdkReleaseDependencyData
+> Task :app:writeReleaseAppMetadata
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:optimizeReleaseResources
+> Task :app:mergeReleaseJavaResource
+> Task :app:mergeExtDexRelease
+> Task :app:mergeDexRelease
+> Task :app:compileReleaseArtProfile
+> Task :app:packageRelease
+> Task :app:createReleaseApkListingFileRedirect
+> Task :app:lintVitalAnalyzeRelease
+> Task :app:lintVitalReportRelease
+> Task :app:lintVitalRelease
+> Task :app:assembleRelease
+
+BUILD SUCCESSFUL in 38s
+48 actionable tasks: 33 executed, 15 up-to-date
+[ExitCode=0]
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:37:25.02] CMD: .\gradlew.bat clean
+------------------------------------------------------------
+> Task :app:clean
+
+BUILD SUCCESSFUL in 23s
+1 actionable task: 1 executed
+[ExitCode=0]
+[PROGRESS] 45% - compileReleaseKotlin
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:37:49.50] CMD: .\gradlew.bat :app:compileReleaseKotlin --stacktrace
+------------------------------------------------------------
+WARNING: We recommend using a newer Android Gradle plugin to use compileSdk = 35
+
+This Android Gradle plugin (8.5.2) was tested up to compileSdk = 34.
+
+You are strongly encouraged to update your project to use a newer
+Android Gradle plugin that has been tested with compileSdk = 35.
+
+If you are already using the latest version of the Android Gradle plugin,
+you may need to wait until a newer version with support for compileSdk = 35 is available.
+
+For more information refer to the compatibility table:
+https://d.android.com/r/tools/api-level-support
+
+To suppress this warning, add/update
+    android.suppressUnsupportedCompileSdk=35
+to this project's gradle.properties.
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:generateReleaseResValues
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:checkReleaseAarMetadata
+> Task :app:generateReleaseResources
+> Task :app:packageReleaseResources
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksRelease
+> Task :app:parseReleaseLocalResources
+> Task :app:processReleaseMainManifest
+> Task :app:processReleaseManifest
+> Task :app:processReleaseManifestForPackage
+> Task :app:mergeReleaseResources
+> Task :app:processReleaseResources
+> Task :app:compileReleaseKotlin
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:158:59 'Help: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Help
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:160:59 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:167:59 'Help: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Help
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:169:59 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:242:55 Parameter 'landscape' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:325:5 Parameter 'showSearch' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:379:104 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:515:138 Unnecessary safe call on a non-null receiver of type FlashCard?
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:515:163 Unnecessary safe call on a non-null receiver of type FlashCard?
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:515:256 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:679:257 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:717:9 Variable 'landscape' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:795:9 Variable 'progress' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:929:275 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:991:261 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1050:21 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1131:9 Variable 'csvLauncher' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1289:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1302:92 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1730:13 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1767:92 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1842:25 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1862:209 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1932:36 'MenuBook: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.MenuBook
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1965:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1973:209 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1997:40 'Logout: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Logout
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2139:40 'Login: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Login
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2172:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2179:217 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2196:106 'Login: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Login
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2336:214 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2457:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2561:92 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2824:78 Parameter 'idx' is never used, could be renamed to _
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Repository.kt:37:35 Condition 'it.deckId == null' is always 'false'
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Repository.kt:364:37 Unnecessary safe call on a non-null receiver of type String
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Repository.kt:385:37 Unnecessary safe call on a non-null receiver of type String
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:305:216 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:366:58 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:366:63 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:367:130 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:367:135 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:687:52 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:687:57 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:691:48 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:691:53 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:710:48 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:710:53 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:712:40 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:712:45 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:322:67 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:725:67 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:729:63 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:822:63 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:824:55 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:923:63 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:925:55 Type mismatch: inferred type is Nothing? but String was expected
+
+BUILD SUCCESSFUL in 37s
+15 actionable tasks: 15 executed
+[ExitCode=0]
+[PROGRESS] 70% - assembleRelease (APK)
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:38:28.17] CMD: .\gradlew.bat :app:assembleRelease --stacktrace
+------------------------------------------------------------
+WARNING: We recommend using a newer Android Gradle plugin to use compileSdk = 35
+
+This Android Gradle plugin (8.5.2) was tested up to compileSdk = 34.
+
+You are strongly encouraged to update your project to use a newer
+Android Gradle plugin that has been tested with compileSdk = 35.
+
+If you are already using the latest version of the Android Gradle plugin,
+you may need to wait until a newer version with support for compileSdk = 35 is available.
+
+For more information refer to the compatibility table:
+https://d.android.com/r/tools/api-level-support
+
+To suppress this warning, add/update
+    android.suppressUnsupportedCompileSdk=35
+to this project's gradle.properties.
+> Task :app:buildKotlinToolingMetadata
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:checkReleaseAarMetadata UP-TO-DATE
+> Task :app:generateReleaseResValues UP-TO-DATE
+> Task :app:mapReleaseSourceSetPaths UP-TO-DATE
+> Task :app:generateReleaseResources UP-TO-DATE
+> Task :app:mergeReleaseResources UP-TO-DATE
+> Task :app:packageReleaseResources UP-TO-DATE
+> Task :app:parseReleaseLocalResources UP-TO-DATE
+> Task :app:createReleaseCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksRelease UP-TO-DATE
+> Task :app:processReleaseMainManifest UP-TO-DATE
+> Task :app:processReleaseManifest UP-TO-DATE
+> Task :app:processReleaseManifestForPackage UP-TO-DATE
+> Task :app:processReleaseResources UP-TO-DATE
+> Task :app:compileReleaseKotlin UP-TO-DATE
+> Task :app:javaPreCompileRelease
+> Task :app:extractProguardFiles
+> Task :app:compileReleaseJavaWithJavac NO-SOURCE
+> Task :app:generateReleaseLintVitalReportModel
+> Task :app:mergeReleaseJniLibFolders
+> Task :app:mergeReleaseNativeLibs
+
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libdatastore_shared_counter.so.
+
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:dexBuilderRelease
+> Task :app:extractReleaseNativeSymbolTables
+> Task :app:desugarReleaseFileDependencies
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:mergeReleaseStartupProfile UP-TO-DATE
+> Task :app:mergeReleaseArtProfile
+> Task :app:mergeReleaseShaders
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseGlobalSynthetics
+> Task :app:mergeReleaseAssets
+> Task :app:compressReleaseAssets
+> Task :app:extractReleaseVersionControlInfo
+> Task :app:processReleaseJavaRes
+> Task :app:collectReleaseDependencies
+> Task :app:sdkReleaseDependencyData
+> Task :app:writeReleaseAppMetadata
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:optimizeReleaseResources
+> Task :app:mergeReleaseJavaResource
+> Task :app:mergeExtDexRelease
+> Task :app:mergeDexRelease
+> Task :app:compileReleaseArtProfile
+> Task :app:packageRelease
+> Task :app:createReleaseApkListingFileRedirect
+> Task :app:lintVitalAnalyzeRelease
+> Task :app:lintVitalReportRelease
+> Task :app:lintVitalRelease
+> Task :app:assembleRelease
+
+BUILD SUCCESSFUL in 38s
+48 actionable tasks: 33 executed, 15 up-to-date
+[ExitCode=0]
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:39:07.47] CMD: .\gradlew.bat clean
+------------------------------------------------------------
+> Task :app:clean
+
+BUILD SUCCESSFUL in 23s
+1 actionable task: 1 executed
+[ExitCode=0]
+[PROGRESS] 45% - compileReleaseKotlin
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:39:31.53] CMD: .\gradlew.bat :app:compileReleaseKotlin --stacktrace
+------------------------------------------------------------
+WARNING: We recommend using a newer Android Gradle plugin to use compileSdk = 35
+
+This Android Gradle plugin (8.5.2) was tested up to compileSdk = 34.
+
+You are strongly encouraged to update your project to use a newer
+Android Gradle plugin that has been tested with compileSdk = 35.
+
+If you are already using the latest version of the Android Gradle plugin,
+you may need to wait until a newer version with support for compileSdk = 35 is available.
+
+For more information refer to the compatibility table:
+https://d.android.com/r/tools/api-level-support
+
+To suppress this warning, add/update
+    android.suppressUnsupportedCompileSdk=35
+to this project's gradle.properties.
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:generateReleaseResValues
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:checkReleaseAarMetadata
+> Task :app:generateReleaseResources
+> Task :app:packageReleaseResources
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksRelease
+> Task :app:parseReleaseLocalResources
+> Task :app:processReleaseMainManifest
+> Task :app:processReleaseManifest
+> Task :app:processReleaseManifestForPackage
+> Task :app:mergeReleaseResources
+> Task :app:processReleaseResources
+> Task :app:compileReleaseKotlin
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:158:59 'Help: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Help
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:160:59 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:167:59 'Help: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Help
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:169:59 'List: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.List
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:242:55 Parameter 'landscape' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:325:5 Parameter 'showSearch' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:379:104 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:515:138 Unnecessary safe call on a non-null receiver of type FlashCard?
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:515:163 Unnecessary safe call on a non-null receiver of type FlashCard?
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:515:256 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:679:257 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:717:9 Variable 'landscape' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:795:9 Variable 'progress' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:929:275 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:991:261 'VolumeUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.VolumeUp
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1050:21 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1131:9 Variable 'csvLauncher' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1289:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1302:92 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1730:13 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1767:92 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1842:25 'Divider(Modifier = ..., Dp = ..., Color = ...): Unit' is deprecated. Renamed to HorizontalDivider
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1862:209 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1932:36 'MenuBook: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.MenuBook
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1965:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1973:209 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:1997:40 'Logout: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Logout
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2139:40 'Login: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Login
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2172:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2179:217 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2196:106 'Login: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Login
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2336:214 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2457:9 Variable 'redeemCode' is never used
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2561:92 'ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.ArrowBack
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/MainActivity.kt:2824:78 Parameter 'idx' is never used, could be renamed to _
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Repository.kt:37:35 Condition 'it.deckId == null' is always 'false'
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Repository.kt:364:37 Unnecessary safe call on a non-null receiver of type String
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Repository.kt:385:37 Unnecessary safe call on a non-null receiver of type String
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:305:216 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:366:58 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:366:63 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:367:130 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:367:135 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:687:52 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:687:57 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:691:48 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:691:53 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:710:48 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:710:53 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:712:40 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/Store.kt:712:45 Unnecessary safe call on a non-null receiver of type String!
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:322:67 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:725:67 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:729:63 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:822:63 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:824:55 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:923:63 Type mismatch: inferred type is Nothing? but String was expected
+w: file:///C:/Users/Sidscri/Documents/GitHub/AdvancedFlashcards/app/src/main/java/com/northstarworks/advancedflashcards/WebAppSync.kt:925:55 Type mismatch: inferred type is Nothing? but String was expected
+
+BUILD SUCCESSFUL in 39s
+15 actionable tasks: 15 executed
+[ExitCode=0]
+[PROGRESS] 70% - assembleRelease (APK)
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:40:11.46] CMD: .\gradlew.bat :app:assembleRelease --stacktrace
+------------------------------------------------------------
+WARNING: We recommend using a newer Android Gradle plugin to use compileSdk = 35
+
+This Android Gradle plugin (8.5.2) was tested up to compileSdk = 34.
+
+You are strongly encouraged to update your project to use a newer
+Android Gradle plugin that has been tested with compileSdk = 35.
+
+If you are already using the latest version of the Android Gradle plugin,
+you may need to wait until a newer version with support for compileSdk = 35 is available.
+
+For more information refer to the compatibility table:
+https://d.android.com/r/tools/api-level-support
+
+To suppress this warning, add/update
+    android.suppressUnsupportedCompileSdk=35
+to this project's gradle.properties.
+> Task :app:buildKotlinToolingMetadata
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:checkReleaseAarMetadata UP-TO-DATE
+> Task :app:generateReleaseResValues UP-TO-DATE
+> Task :app:mapReleaseSourceSetPaths UP-TO-DATE
+> Task :app:generateReleaseResources UP-TO-DATE
+> Task :app:mergeReleaseResources UP-TO-DATE
+> Task :app:packageReleaseResources UP-TO-DATE
+> Task :app:parseReleaseLocalResources UP-TO-DATE
+> Task :app:createReleaseCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksRelease UP-TO-DATE
+> Task :app:processReleaseMainManifest UP-TO-DATE
+> Task :app:processReleaseManifest UP-TO-DATE
+> Task :app:processReleaseManifestForPackage UP-TO-DATE
+> Task :app:processReleaseResources UP-TO-DATE
+> Task :app:compileReleaseKotlin UP-TO-DATE
+> Task :app:javaPreCompileRelease
+> Task :app:extractProguardFiles
+> Task :app:compileReleaseJavaWithJavac NO-SOURCE
+> Task :app:generateReleaseLintVitalReportModel
+> Task :app:mergeReleaseJniLibFolders
+> Task :app:mergeReleaseNativeLibs
+
+> Task :app:stripReleaseDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libdatastore_shared_counter.so.
+
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:dexBuilderRelease
+> Task :app:extractReleaseNativeSymbolTables
+> Task :app:desugarReleaseFileDependencies
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:mergeReleaseStartupProfile UP-TO-DATE
+> Task :app:mergeReleaseArtProfile
+> Task :app:mergeReleaseShaders
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseGlobalSynthetics
+> Task :app:mergeReleaseAssets
+> Task :app:extractReleaseVersionControlInfo
+> Task :app:compressReleaseAssets
+> Task :app:processReleaseJavaRes
+> Task :app:collectReleaseDependencies
+> Task :app:sdkReleaseDependencyData
+> Task :app:writeReleaseAppMetadata
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:optimizeReleaseResources
+> Task :app:mergeReleaseJavaResource
+> Task :app:mergeExtDexRelease
+> Task :app:mergeDexRelease
+> Task :app:compileReleaseArtProfile
+> Task :app:packageRelease
+> Task :app:createReleaseApkListingFileRedirect
+> Task :app:lintVitalAnalyzeRelease
+> Task :app:lintVitalReportRelease
+> Task :app:lintVitalRelease
+> Task :app:assembleRelease
+
+BUILD SUCCESSFUL in 37s
+48 actionable tasks: 33 executed, 15 up-to-date
+[ExitCode=0]
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:40:49.73] CMD: .\gradlew.bat clean
+------------------------------------------------------------
+^C^C
