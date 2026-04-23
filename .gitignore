@@ -1,0 +1,72 @@
+# ---------- OS ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+# ---------- Gradle ----------
+.gradle/
+**/.gradle/
+build/
+**/build/
+# ---------- Android ----------
+**/captures/
+**/outputs/
+**/*.apk
+**/*.aab
+# ---------- Android Studio / IntelliJ ----------
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+# ---------- Java / Kotlin ----------
+*.class
+*.jar
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+.Python
+venv/
+.venv/
+# ---------- Secrets ----------
+*.jks
+*.keystore
+*.p12
+*.pem
+*.key
+.env
+.env.*
+# ---------- KenpoFlashcardsWebServer data ----------
+# Contains user passwords, progress, and other sensitive data
+KenpoFlashcardsWebServer/data/
+KenpoFlashcardsWebServer/logs/
+KenpoFlashcardsWebServer/*.db
+# ---------- API Keys (blocked by GitHub secret scanning) ----------
+gpt api.txt
+**/gpt api.txt
+KenpoFlashcardsWebServer/START_KenpoFlashcardsWebServer.bat
+KenpoFlashcardsWebServer_Service_Tray/
+# ---------- Packaging outputs (optional) ----------
+# PyInstaller / installers
+**/dist/
+**/release/
+**/*.spec
+!KenpoFlashcardsWebServer_Packaged/packaging/pyinstaller/kenpo_tray.spec
+!KenpoFlashcardsWebServer_Packaged/packaging/pyinstaller/kenpo_server.spec
+
+# ---------- User additions / merged ----------
+*.exe
+*.msi
+*.aab
+*.apk
+yarn-error.log*
+
+# Excel temp/lock files
+~$*.xlsx
+~$*.xls
+~$*.xlsm
+
+# Allow PyInstaller spec files for the Windows packaging project
+!KenpoFlashcardsWebServer_Packaged_in_exe_msi/packaging/pyinstaller/*.spec
+
+# Allow PyInstaller spec files for Kenpo packaging
+!KenpoFlashcardsWebServer_Packaged_in_exe_msi/packaging/pyinstaller/*.spec
