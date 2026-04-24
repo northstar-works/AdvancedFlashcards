@@ -1,0 +1,259 @@
+name: Build + Sign + Publish F-Droid Repo (GitHub Pages)
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    env:
+      GRADLE_USER_HOME: ${{ github.workspace }}/.gradle
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Decode keystore (PKCS12)
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | tr -d '\n' | base64 -d > release.keystore
+          ls -la release.keystore
+          keytool -list -keystore release.keystore -storetype PKCS12 -storepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >/dev/null
+          echo "Keystore opens OK."
+
+      - name: Convert keystore PKCS12 to JKS
+        run: |
+          keytool -importkeystore \
+            -srckeystore release.keystore \
+            -srcstoretype PKCS12 \
+            -srcstorepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+            -destkeystore release-jks.keystore \
+            -deststoretype JKS \
+            -deststorepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+            -srcalias "advancedflashcards" \
+            -destalias "advancedflashcards" \
+            -noprompt
+          ls -la release-jks.keystore
+          echo "Conversion OK"
+
+      - name: Build release APK (no-wrapper exec workaround)
+        run: |
+          WRAPPER_PROPS="./gradle/wrapper/gradle-wrapper.properties"
+          if [ ! -f "$WRAPPER_PROPS" ]; then
+            echo "Missing $WRAPPER_PROPS"
+            ls -la ./gradle/wrapper || true
+            exit 1
+          fi
+
+          DIST_URL=$(grep -E '^distributionUrl=' "$WRAPPER_PROPS" | cut -d= -f2-)
+          DIST_URL=$(echo "$DIST_URL" | sed 's#\\##g')
+          echo "Gradle distribution URL: $DIST_URL"
+
+          mkdir -p /tmp/gradle_dist
+          curl -L "$DIST_URL" -o /tmp/gradle_dist/gradle.zip
+          unzip -q /tmp/gradle_dist/gradle.zip -d /tmp/gradle_dist
+
+          GRADLE_HOME=$(find /tmp/gradle_dist -maxdepth 1 -type d -name "gradle-*" | head -n 1)
+          if [ -z "$GRADLE_HOME" ]; then
+            echo "Could not find extracted gradle-* folder"
+            ls -la /tmp/gradle_dist
+            exit 1
+          fi
+
+          echo "Using GRADLE_HOME=$GRADLE_HOME"
+          bash "$GRADLE_HOME/bin/gradle" -p . assembleRelease
+
+      - name: Find APK to sign
+        run: |
+          echo "APK outputs (release):"
+          find app/build/outputs/apk/release -type f -name "*.apk" -print
+
+          APK_IN=$(find app/build/outputs/apk/release -type f -name "*unsigned*.apk" | head -n 1)
+          if [ -z "$APK_IN" ]; then
+            APK_IN=$(find app/build/outputs/apk/release -type f -name "*.apk" | head -n 1)
+          fi
+
+          if [ -z "$APK_IN" ]; then
+            echo "No APK found!"
+            exit 1
+          fi
+
+          echo "Will sign: $APK_IN"
+          echo "APK_IN=$APK_IN" >> $GITHUB_ENV
+
+      - name: Sign APK (apksigner)
+        run: |
+          BUILD_TOOLS=$(ls "$ANDROID_SDK_ROOT/build-tools" | sort -V | tail -n 1)
+          APKSIGNER="$ANDROID_SDK_ROOT/build-tools/$BUILD_TOOLS/apksigner"
+
+          APK_OUT="app-release.apk"
+
+          "$APKSIGNER" sign \
+            --ks release-jks.keystore \
+            --ks-type JKS \
+            --ks-key-alias "advancedflashcards" \
+            --ks-pass pass:"${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+            --key-pass pass:"${{ secrets.ANDROID_KEY_PASSWORD }}" \
+            --out "$APK_OUT" \
+            "$APK_IN"
+
+          "$APKSIGNER" verify "$APK_OUT"
+          ls -la "$APK_OUT"
+
+          # Get version name from build.gradle for a descriptive filename
+          VERSION=$(grep -oP 'versionName "\K[^"]+' app/build.gradle | head -1)
+          NAMED_APK="AdvancedFlashcards-${VERSION}-release.apk"
+          cp "$APK_OUT" "$NAMED_APK"
+          echo "NAMED_APK=$NAMED_APK" >> $GITHUB_ENV
+
+      - name: Push APK to northstar-works/fdroid
+        env:
+          FDROID_TOKEN: ${{ secrets.FDROID_REPO_TOKEN }}
+        run: |
+          git clone \
+            "https://x-access-token:${FDROID_TOKEN}@github.com/northstar-works/fdroid.git" \
+            fdroid-main
+
+          mkdir -p fdroid-main/repo
+          rm -f fdroid-main/repo/AdvancedFlashcards-*.apk
+          cp "$NAMED_APK" fdroid-main/repo/
+
+          cd fdroid-main
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add repo/
+
+          if git diff --cached --quiet; then
+            echo "No APK change, skipping."
+          else
+            git commit -m "chore: update AdvancedFlashcards to $NAMED_APK"
+            git push
+          fi
+
+      - name: Cache apt packages
+        uses: actions/cache@v4
+        with:
+          path: /var/cache/apt/archives
+          key: apt-fdroidserver-${{ runner.os }}-v1
+          restore-keys: apt-fdroidserver-${{ runner.os }}-
+
+      - name: Build F-Droid repo index (signed)
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-upgrade fdroidserver
+
+          rm -rf fdroidwork
+          mkdir -p fdroidwork
+          cd fdroidwork
+          fdroid init
+
+          mkdir -p repo
+          cp ../app-release.apk repo/
+          cp ../release-jks.keystore keystore.jks
+
+          cat > config.yml << EOF
+          repo_url: https://northstar-works.github.io/AdvancedFlashcards/repo
+          repo_name: Advanced Flashcards
+          repo_description: "Official F-Droid repository for Advanced Flashcards by Northstar Works."
+          repo_keyalias: advancedflashcards
+          keystore: keystore.jks
+          keystorepass: ${ANDROID_KEYSTORE_PASSWORD}
+          keypass: ${ANDROID_KEY_PASSWORD}
+          EOF
+
+          fdroid update --create-metadata || true
+          fdroid update
+          ls -la repo
+
+      - name: Prepare Pages content
+        run: |
+          rm -rf public
+          mkdir -p public
+          cp -r fdroidwork/repo public/repo
+
+          cat > public/index.html << 'HTMLEOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+              <title>Advanced Flashcards - F-Droid Repo</title>
+              <style>
+                  * { box-sizing: border-box; }
+                  body {
+                      font-family: system-ui, -apple-system, sans-serif;
+                      max-width: 600px;
+                      margin: 0 auto;
+                      padding: 20px;
+                      background: #0f1217;
+                      color: #eaeef7;
+                      line-height: 1.6;
+                  }
+                  h1 { color: #fff; margin-bottom: 8px; }
+                  .subtitle { color: #b7c0d4; margin-bottom: 24px; }
+                  .card {
+                      background: #151a22;
+                      border: 1px solid #2b3140;
+                      border-radius: 12px;
+                      padding: 20px;
+                      margin-bottom: 16px;
+                  }
+                  .qr-container { text-align: center; padding: 20px; }
+                  .qr-container img { background: white; padding: 12px; border-radius: 8px; max-width: 200px; }
+                  .repo-url { background: #11161f; padding: 12px; border-radius: 8px; font-family: monospace; word-break: break-all; margin: 12px 0; }
+                  .copy-btn { background: #1f6feb; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+                  .copy-btn:hover { background: #1a5fd4; }
+                  .steps { color: #b7c0d4; }
+                  .steps li { margin-bottom: 8px; }
+              </style>
+          </head>
+          <body>
+              <h1>🥋 Advanced Flashcards</h1>
+              <p class="subtitle">by Northstar Works</p>
+              <div class="card">
+                  <h2>📱 Add to F-Droid</h2>
+                  <div class="qr-container">
+                      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fnorthstar-works.github.io%2FAdvancedFlashcards%2Frepo" alt="QR Code">
+                  </div>
+                  <div class="repo-url" id="repoUrl">https://northstar-works.github.io/AdvancedFlashcards/repo</div>
+                  <button class="copy-btn" onclick="copyUrl()">📋 Copy URL</button>
+              </div>
+              <script>
+                  function copyUrl() {
+                      navigator.clipboard.writeText(document.getElementById('repoUrl').textContent).then(() => {
+                          const btn = document.querySelector('.copy-btn');
+                          btn.textContent = '✓ Copied!';
+                          setTimeout(() => btn.textContent = '📋 Copy URL', 2000);
+                      });
+                  }
+              </script>
+          </body>
+          </html>
+          HTMLEOF
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
