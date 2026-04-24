@@ -1,0 +1,19 @@
+============================================================
+Advanced Flashcards — FINAL Release Build (APK + AAB)
+Started: Thu 04/23/2026  1:30:27.10
+Folder : \\SIDSCRI-grab\Users\Sidscri\Documents\GitHub\AdvancedFlashcards
+Output : \\SIDSCRI-grab\Users\Sidscri\Documents\GitHub\AdvancedFlashcards\output\release
+Log    : \\SIDSCRI-grab\Users\Sidscri\Documents\GitHub\AdvancedFlashcards\logs\final_release_build_20260423_013026.log
+============================================================
+[PROGRESS] 10% - gradlew --version
+
+------------------------------------------------------------
+[Thu 04/23/2026  1:30:27.59] CMD: .\gradlew.bat --version
+------------------------------------------------------------
+ 
+ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH. 
+ 
+Please set the JAVA_HOME variable in your environment to match the 
+location of your Java installation. 
+[ExitCode=9009]
+[PROGRESS] 100% - FAILED
