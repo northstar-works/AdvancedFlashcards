@@ -1,0 +1,61 @@
+REIMPLEMENTATION VERIFY - AdvancedFlashcards Android v7.5.0 (build 47)
+Date: 2026-07-17
+Pairs with: Advanced Flashcards WebApp Server build in advanced_flashcards_server_kenpo_migration zip (same date)
+
+FILES CHANGED
+1. app/build.gradle
+   - versionCode 46 -> 47, versionName 7.4.0 -> 7.5.0 (edited via Python only)
+
+2. app/src/main/AndroidManifest.xml
+   - android:allowBackup="true" -> "false"
+     Reason: auth token + AI API keys persist in plain DataStore; backups would
+     capture them. usesCleartextTraffic stays true until the Caddy/https cutover.
+
+3. app/src/main/assets/kenpo_words.json  [DELETED]
+   - Kenpo deck is no longer embedded. It is now a server-side admin-owned
+     default-sample deck and syncs down like every other deck.
+
+4. Repository.kt
+   - loadDefaultCards(): asset read wrapped in try/catch -> emptyList() when the
+     asset is absent (legacy fallback only). No other logic changed.
+
+5. Models.kt
+   - RemoteConfig: new field scheme ("http"|"https", default "http"); default
+     host sidscri.tplinkdns.com -> sidscri.from-tx.com; toBaseUrl() is
+     scheme-aware and omits default ports (80/443).
+   - StudyDeck.KENPO_DEFAULT: sourceFile null, cardCount 0 (placeholder until
+     first sync). isBuiltIn stays true locally so deck pushes keep skipping it
+     (server owns the kenpo record now).
+
+6. WebAppSync.kt
+   - DEFAULT_SERVER_URL -> http://sidscri.from-tx.com:8009
+   - pullRemoteConfig(): parses "scheme" from the server payload.
+   - pushRemoteConfig(): includes "scheme" in the POST body.
+   - Stale tplinkdns doc comments updated.
+
+7. MainActivity.kt (admin Remote Config panel)
+   - New managedScheme state (derived from saved webAppUrl prefix).
+   - http / https (Caddy/TLS) FilterChip toggle above the Host field.
+   - Preview URL + Save/Push use the selected scheme; Pull applies the
+     server-provided scheme and shows toBaseUrl() in the status line.
+   - Host fallback/placeholder -> sidscri.from-tx.com.
+
+HOW KENPO CARDS REACH THE APP NOW
+- Full sync pull (GET /api/sync/user_cards) returns per-user cards PLUS all
+  deck-scoped cards from accessible decks (kenpo included), tagged
+  serverManaged=true. They land in the existing user-cards store with
+  deckId="kenpo", so activeCardsFlow's kenpo filter picks them up unchanged.
+- Pushback safety lives server-side: non-owner copies of serverManaged cards
+  are skipped; owner/admin edits are routed into the deck's storage.
+- Fresh install before first login shows an empty Kenpo placeholder deck; this
+  is intended (no decks ship with the app anymore).
+
+PACKAGING NOTES
+- gradle/wrapper/gradle-wrapper.jar and the .gradle/ cache directory are NOT in
+  this zip (source archive expired before they could be restored). Merge this
+  zip over the existing working tree; do not delete the local wrapper jar.
+- No @JavascriptInterface overloads introduced; no JSON.stringify-in-onclick
+  (no WebView layer in this app). ASCII-only in inserted code.
+- Kotlin compile runs in the AndroidBuilder pipeline as usual; crude brace
+  balance verified on all four edited .kt files, FilterChip already used
+  elsewhere in MainActivity (material3 wildcard import, BOM 2024.06.00).

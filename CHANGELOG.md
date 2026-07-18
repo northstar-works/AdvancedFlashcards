@@ -4,6 +4,21 @@ All notable changes are documented here. Format: **Added / Changed / Fixed**.
 
 ---
 
+## 7.5.0 (build 47) — 2026-07-17
+
+### Added
+- Scheme (http/https) support for Remote Server Config — push/pull now carries the scheme, ready for the Caddy/TLS cutover. New http/https toggle in the admin Remote Config panel with a live URL preview (default ports 80/443 omitted from built URLs).
+
+### Changed
+- Default server host corrected: sidscri.tplinkdns.com → **sidscri.from-tx.com** (DEFAULT_SERVER_URL, remote-config fallbacks, placeholders).
+- Kenpo deck is no longer embedded in the APK. The kenpo_words.json asset was removed; the deck now lives on the server as an admin-owned default-sample deck and syncs down via /api/sync/user_cards like every other deck (cards arrive tagged serverManaged; server routes owner/admin edits into deck storage and ignores non-owner pushbacks).
+- KENPO_DEFAULT is now a placeholder deck entry (sourceFile null, cardCount 0) so the deck list renders before first sync.
+
+### Fixed
+- android:allowBackup set to false so the plaintext auth token and AI API keys in DataStore are no longer captured in device/cloud backups.
+
+---
+
 ## 7.2.0 (build 44) — 2026-03-15
 
 

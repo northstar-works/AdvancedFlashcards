@@ -13,8 +13,16 @@ class Repository(private val context: Context, private val store: Store) {
     
     private fun loadDefaultCards(): List<FlashCard> {
         cachedDefaults?.let { return it }
-        val json = context.assets.open("kenpo_words.json").bufferedReader().use { it.readText() }
-        val cards = JsonUtil.readAssetCards(json)
+        // The Kenpo deck is no longer embedded in the app. It now lives on the
+        // server as an admin-owned default-sample deck and arrives via sync
+        // (/api/sync/user_cards) like every other deck. The asset read remains
+        // only as a legacy fallback for old builds that still bundle the file.
+        val cards = try {
+            val json = context.assets.open("kenpo_words.json").bufferedReader().use { it.readText() }
+            JsonUtil.readAssetCards(json)
+        } catch (_: Exception) {
+            emptyList()
+        }
         cachedDefaults = cards
         return cards
     }

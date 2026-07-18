@@ -1268,11 +1268,14 @@ fun AdminScreen(nav: NavHostController, repo: Repository) {
     var chatGptModel by remember(adminSettings) { mutableStateOf(adminSettings.chatGptModel) }
     var geminiKey by remember(adminSettings) { mutableStateOf(adminSettings.geminiApiKey) }
     var geminiModel by remember(adminSettings) { mutableStateOf(adminSettings.geminiModel) }
+    var managedScheme by remember(adminSettings) {
+        mutableStateOf(if (adminSettings.webAppUrl.startsWith("https://")) "https" else "http")
+    }
     var managedHost by remember(adminSettings) {
         mutableStateOf(
             adminSettings.webAppUrl
                 .removePrefix("http://").removePrefix("https://")
-                .substringBefore(":").ifBlank { "sidscri.tplinkdns.com" }
+                .substringBefore(":").substringBefore("/").ifBlank { "sidscri.from-tx.com" }
         )
     }
     var managedPort by remember(adminSettings) {
@@ -1590,7 +1593,7 @@ Spacer(Modifier.height(16.dp))
                 singleLine = true,
                 textStyle = LocalTextStyle.current.copy(fontSize = 12.sp),
                 leadingIcon = { Icon(Icons.Default.Cloud, "Host") },
-                placeholder = { Text("sidscri.tplinkdns.com", color = DarkMuted, fontSize = 11.sp) }
+                placeholder = { Text("sidscri.from-tx.com", color = DarkMuted, fontSize = 11.sp) }
             )
             Spacer(Modifier.height(8.dp))
             OutlinedTextField(
@@ -1604,7 +1607,24 @@ Spacer(Modifier.height(16.dp))
             )
             Spacer(Modifier.height(8.dp))
 
-            val previewUrl = "http://${managedHost.trim()}:${managedPort.trim()}"
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                FilterChip(
+                    selected = managedScheme == "http",
+                    onClick = { managedScheme = "http" },
+                    label = { Text("http", fontSize = 12.sp) }
+                )
+                FilterChip(
+                    selected = managedScheme == "https",
+                    onClick = { managedScheme = "https" },
+                    label = { Text("https (Caddy/TLS)", fontSize = 12.sp) }
+                )
+            }
+            Spacer(Modifier.height(8.dp))
+
+            val previewPort = managedPort.trim().toIntOrNull() ?: 8009
+            val previewIsDefaultPort = (managedScheme == "http" && previewPort == 80) || (managedScheme == "https" && previewPort == 443)
+            val previewUrl = if (previewIsDefaultPort) "$managedScheme://${managedHost.trim()}"
+                             else "$managedScheme://${managedHost.trim()}:$previewPort"
             Text("Preview: $previewUrl", color = DarkMuted, fontSize = 11.sp)
             Spacer(Modifier.height(8.dp))
 
@@ -1624,6 +1644,7 @@ Spacer(Modifier.height(16.dp))
                     scope.launch {
                         val config = RemoteConfig(
                             serverType = managedServerType,
+                            scheme = managedScheme,
                             host = managedHost.trim(),
                             port = managedPort.trim().toIntOrNull() ?: 8009
                         )
@@ -1644,10 +1665,11 @@ Spacer(Modifier.height(16.dp))
                 scope.launch {
                     val res = repo.syncPullRemoteConfig(adminSettings.webAppUrl.ifBlank { WebAppSync.DEFAULT_SERVER_URL })
                     if (res.success) {
+                        managedScheme = if (res.config.scheme.equals("https", ignoreCase = true)) "https" else "http"
                         managedHost = res.config.host
                         managedPort = res.config.port.toString()
                         managedServerType = res.config.serverType
-                        statusMessage = "Remote config pulled. Updated: ${res.config.serverType} @ ${res.config.host}:${res.config.port}"
+                        statusMessage = "Remote config pulled. Updated: ${res.config.serverType} @ ${res.config.toBaseUrl()}"
                     } else {
                         statusMessage = "Pull failed: ${res.error.ifBlank { "Endpoint not available" }}"
                     }

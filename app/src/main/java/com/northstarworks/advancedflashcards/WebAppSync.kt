@@ -27,11 +27,11 @@ import java.net.URL
  */
 object WebAppSync {
     
-    const val DEFAULT_SERVER_URL = "http://sidscri.tplinkdns.com:8009"
+    const val DEFAULT_SERVER_URL = "http://sidscri.from-tx.com:8009"
 
     /**
      * Ensure a URL has http:// prefix. Strips any existing scheme first so
-     * "sidscri.tplinkdns.com:8009", "http://...", and "https://..." all work.
+     * "sidscri.from-tx.com:8009", "http://...", and "https://..." all work.
      */
     fun normalizeUrl(url: String): String {
         val trimmed = url.trim().trimEnd('/')
@@ -514,7 +514,8 @@ object WebAppSync {
                 val json = JSONObject(body)
                 val config = RemoteConfig(
                     serverType = json.optString("server_type", "standalone"),
-                    host       = json.optString("host", "sidscri.tplinkdns.com"),
+                    scheme     = json.optString("scheme", "http"),
+                    host       = json.optString("host", "sidscri.from-tx.com"),
                     port       = json.optInt("port", 8009),
                     updatedAt  = json.optString("updated_at", ""),
                     updatedBy  = json.optString("updated_by", "")
@@ -545,6 +546,7 @@ object WebAppSync {
 
             val body = JSONObject().apply {
                 put("server_type", config.serverType)
+                put("scheme", config.scheme)
                 put("host", config.host)
                 put("port", config.port)
             }
@@ -941,7 +943,7 @@ object WebAppSync {
  * SERVER IMPLEMENTATION GUIDE
  * ===========================
  * 
- * Your Express.js server at http://sidscri.tplinkdns.com:8009 needs these endpoints:
+ * Your Express.js server at http://sidscri.from-tx.com:8009 needs these endpoints:
  * 
  * Data directory: C:/Program Files/Advanced Flashcards/_internal/data/
  * 
