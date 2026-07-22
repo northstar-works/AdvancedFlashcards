@@ -1,0 +1,32 @@
+REIMPLEMENTATION VERIFY - AdvancedFlashcards Android v7.7.1 (build 50)
+Date: 2026-07-19
+
+FIX: Kenpo card count mismatch (study view showed 101, Switch page + server 89).
+
+CAUSE
+  Repository.allCardsFlow()/activeCardsFlow() merged loadDefaultCards() (the
+  embedded kenpo_words.json asset, ~101 cards) with the server-synced user
+  cards (89). The asset cards use positional IDs that differ from the server's
+  content-stable IDs, so distinctBy{id} kept both sets and the kenpo deck
+  double-counted. The Switch page reads deck.cardCount straight from the
+  server, so it correctly showed 89 - hence the two numbers disagreeing.
+  Devices on a fresh b49 install don't bundle the asset so they were fine;
+  this tablet upgraded in place from an older APK that still had it.
+
+FIX (Repository.kt)
+  New private mergeWithDefaults(custom, user): if the synced user cards already
+  contain any kenpo card (deckId null or "kenpo"), the embedded defaults are
+  dropped entirely; otherwise they're used as a first-run fallback. Both
+  allCardsFlow and activeCardsFlow now go through it. No other behavior change.
+
+RESULT
+  Kenpo shows the server-authoritative count (89) in the study view, Switch
+  page, and deck list alike, regardless of whether the running APK still
+  bundles the legacy asset.
+
+VALIDATION: brace/paren balance 0 on Repository.kt; ASCII-only; version bumped
+via Python (49->50 / 7.7.0->7.7.1). Compiles in AndroidBuilder. Zip built on
+Linux (gradlew keeps LF + exec bit).
+
+NOTE: pairs with server build advanced_flashcards_server_20260719c (web AI
+review-list checkbox CSS fix). The two are independent; deploy in any order.

@@ -1,0 +1,21 @@
+REIMPLEMENTATION VERIFY - AdvancedFlashcards Android v7.8.0 (build 52)
+Date: 2026-07-19
+Pairs with server build advanced_flashcards_server_20260719d.
+
+1. SWAP Q/A BUTTON (MainActivity.kt, AI review list)
+   New "Swap Q/A" OutlinedButton beside Select All / Clear. On tap it remaps
+   aiGeneratedTerms with term<->definition swapped and pronunciation cleared
+   (pronunciation applied to the original term). Because "Add Selected" saves
+   straight from aiGeneratedTerms, the swap affects both the on-screen list and
+   the created cards. Tapping again swaps back. Selection state is preserved.
+
+2. MAX CARDS = CEILING (AiGenerationHelper.kt, local-key AI Search)
+   The local generation prompt now states $maxCards is a MAXIMUM and instructs
+   the model to return the complete finite set and STOP (no padding/duplication)
+   for finite topics like "USA state capitals". Matches the server-side change
+   for users whose keys live on the server.
+
+VALIDATION: brace/paren balance 0 on both edited files; ASCII except the
+existing arrow glyph in the button label (matches web); version bumped via
+Python (51->52 / 7.7.2->7.8.0). Compiles in AndroidBuilder. Zip built on Linux
+(gradlew keeps LF + exec bit).

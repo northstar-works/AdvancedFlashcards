@@ -1,0 +1,52 @@
+REIMPLEMENTATION VERIFY - AdvancedFlashcards Android v7.7.0 (build 49)
+Date: 2026-07-19
+Pairs with: server build advanced_flashcards_server_20260719b (deploy together)
+
+FEATURE: AI image + document scanning to create decks (was placeholder).
+
+NEW FILE
+  FileUploadUtil.kt - reads a content Uri fully into memory and returns a
+  base64 data URL + resolved display name + MIME type (queryName uses
+  OpenableColumns; MIME falls back to extension). 12 MB cap.
+
+WebAppSync.kt
+  + AiDeckResult data class
+  + generateDeckOnServer(serverUrl, token, genType, maxCards, keywords,
+    imageDataUrl, docName, docType, docContentDataUrl): POSTs to
+    /api/ai/generate_deck with a 120s read timeout (vision/doc are slow),
+    parses {cards:[...]} into List<AiGeneratedTerm>, surfaces server error
+    messages. genType is "photo" | "document" | "keywords".
+
+MainActivity.kt (ManageDecksScreen, Create tab)
+  - Image picker now stores the Uri (selectedDocumentUri) and resolves the
+    real display name.
+  - Document picker resolves the real display name via FileUploadUtil.
+  - "Scan Image with AI": loads the picked image as a data URL and calls
+    generateDeckOnServer(type=photo); results fill the existing
+    review/select list (showAiResults), pre-selected. Requires login.
+  - "Process Document with AI" (non-JSON branch): loads the doc as a data
+    URL and calls generateDeckOnServer(type=document); same review flow.
+    JSON files keep their existing direct-import path (no AI).
+  - AI Search: uses the local API key when present; otherwise falls back to
+    generateDeckOnServer(type=keywords) when logged in. Enable/guard logic
+    updated accordingly.
+  - All three methods converge on the same "Create Deck with N Cards"
+    button, so users trim results before saving.
+
+WHY SERVER-BACKED (not on-device):
+  Vision API access, PDF understanding, and .docx/.xlsx text extraction all
+  live on the server, which also holds the API keys. The device only sends
+  the file bytes (base64) over the authenticated sync channel.
+
+SERVER PREREQUISITES (in paired build):
+  - /api/ai/generate_deck NameError fix (ai_available was undefined -> every
+    photo/document/keyword call 500'd). Now loads encrypted keys and guards
+    correctly.
+  - Image media-type detection (PNG/WebP now work, not just JPEG).
+  - Stdlib .docx/.xlsx text extraction; PDFs via vision; JSON direct.
+
+VALIDATION: brace/paren balance 0 on all edited/new .kt files; ASCII-only
+inserts; version bumped via Python (48->49 / 7.6.0->7.7.0). Server endpoint
+end-to-end tested (keywords/photo/docx/json/txt + no-AI guards) with mocked
+AI callers - all pass. Kotlin compiles in AndroidBuilder. Zip built on Linux
+(gradlew keeps LF + exec bit).

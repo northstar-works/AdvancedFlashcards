@@ -1,0 +1,39 @@
+REIMPLEMENTATION VERIFY - AdvancedFlashcards Android v7.6.0 (build 48)
+Date: 2026-07-19
+Pairs with: server build advanced_flashcards_server_20260719 (deploy together)
+
+FIXES THE ISSUES REPORTED ON THE TABLET:
+
+1. LOGIN-FIRST STARTUP (MainActivity.kt, AppRoot)
+   - New one-shot LaunchedEffect reads the PERSISTED AdminSettings via
+     adminSettingsFlow().first() (not the initial default), then navigates to
+     Route.Login when not logged in / no token. rememberSaveable guard stops
+     re-redirects on rotation. Imports added: saveable.rememberSaveable,
+     kotlinx.coroutines.flow.first.
+   - The empty "To Study / No cards." cold-start screen is gone for
+     logged-out users.
+
+2. KENPO DECK: 0 CARDS + NO EDIT OPTION (Store.kt / WebAppSync.kt / Models.kt)
+   Root cause: Store.replaceDecksFromServer() filtered OUT the server's kenpo
+   record (filter { it.id != "kenpo" }) and decksFlow() unconditionally
+   injected the 0-card KENPO_DEFAULT placeholder with isBuiltIn=true - so the
+   UI showed 0 cards, a Built-in chip, and hid the edit controls.
+   - replaceDecksFromServer now stores every server deck including kenpo.
+   - decksFlow injects the placeholder ONLY when no kenpo record exists yet
+     (pre-first-sync).
+   - StudyDeck gains canEdit (default true; all existing constructors remain
+     valid). Encoded/decoded in Store, parsed in WebAppSync.pullDecks.
+   - ManageDecksScreen: action buttons (set-default/edit/delete) now gate on
+     (!isBuiltIn && canEdit); read-only server decks show a "Sample" chip;
+     switcher-header fallback "?: 88" -> "?: 0".
+
+SERVER-SIDE PREREQUISITES (in the paired server build):
+   - GET /api/sync/decks now returns canEdit per deck (owner/admin true).
+   - POST /api/sync/decks enforces ownership on metadata updates (a non-owner
+     push can no longer rename any deck, kenpo included); new decks pushed
+     from Android get ownerId/createdBy = pushing user; the global isDefault
+     flag is admin-only.
+
+VALIDATION: brace balance 0 on all four edited .kt files; ASCII-only inserts;
+version bumped via Python (7.5.0/47 -> 7.6.0/48). Kotlin compile runs in
+AndroidBuilder as usual. Zip built on Linux: gradlew keeps LF + exec bit.

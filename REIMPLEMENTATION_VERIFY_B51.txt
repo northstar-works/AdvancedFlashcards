@@ -1,0 +1,32 @@
+REIMPLEMENTATION VERIFY - AdvancedFlashcards Android v7.7.2 (build 51)
+Date: 2026-07-19
+Tablet landscape layout fixes (Samsung tablet). MainActivity.kt only.
+
+1. CARD NOT FITTING SCREEN (landscape)
+   FlipCard gained a fillHeight param (default false). LandscapeStudyLayout's
+   left column now passes fillHeight=true and uses .weight(1f).fillMaxHeight(),
+   so the card grows to fill the column instead of a fixed 220dp floating at
+   the top. Portrait and the other study screens keep the fixed height
+   (fillHeight defaults false; all 4 portrait call sites unchanged).
+
+2. BOTTOM BAR COVERED BY SYSTEM NAV / SAMSUNG TASKBAR (landscape)
+   The landscape NavigationBar hard-coded .height(56.dp), which dropped the
+   window-inset padding and let the Samsung taskbar overlap it. Replaced with
+   .defaultMinSize(minHeight = 56.dp).windowInsetsPadding(
+   WindowInsets.navigationBars.only(WindowInsetsSides.Bottom)) so the bar sits
+   above the system navigation area and grows to fit rather than clipping.
+   Portrait NavigationBar was already correct (default insets) - untouched.
+
+3. CUSTOM (star) + PUZZLE (breakdown) BUTTONS MISMATCHED
+   They were IconButtons with a DarkPanel2 rounded-square background, so they
+   looked like flat squares between the pill-shaped Prev/Speak/Next and action
+   buttons. Now OutlinedButton (height 36dp, width 48dp, zero content padding)
+   matching the surrounding buttons; same icons, tints, and click handlers.
+
+VALIDATION: brace/paren balance 0; all inset symbols resolve via the existing
+androidx.compose.foundation.layout.* wildcard import; PaddingValues already in
+use; FlipCard's 5 other call sites remain valid (new param has a default).
+Version bumped via Python (50->51 / 7.7.1->7.7.2). Compiles in AndroidBuilder.
+Zip built on Linux (gradlew keeps LF + exec bit).
+
+NOTE: server unchanged; pair with any current server build.

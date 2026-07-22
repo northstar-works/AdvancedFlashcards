@@ -4,6 +4,106 @@ All notable changes are documented here. Format: **Added / Changed / Fixed**.
 
 ---
 
+## 7.10.0 (build 55) — 2026-07-19
+
+### Added
+- Randomize (shuffle) button on Learned > Study, matching the other study decks.
+- Per-deck Study Method dropdown (To Study, Unsure, Learned Study): Default (term first, flip for answer), Speak first (blank card prompts you to press Speak, which auto-speaks each new card; flip reveals the answer), and Reverse (definition first). The choice is per-deck and ephemeral - it resets to Default on app restart and does not affect other decks.
+
+### Changed
+- "Definition first (reverse)" moved out of global Settings into the per-deck Study Method dropdown (as the Reverse option), so it no longer persists across restarts or applies to every deck.
+
+---
+
+## 7.9.0 (build 54) — 2026-07-19
+
+### Added
+- Automatic sync: creating or editing a deck, card, or breakdown now pushes to the server automatically (auto-push on change is on by default). Push/Pull remain available for manual, case-by-case use.
+- Sync status indicator under the Sync Progress button: a colored dot with the last-synced time. Green = all changes synced, orange = changes pending upload (offline / not logged in, will retry), red = last sync failed (push/pull manually).
+
+### Fixed
+- Decks and cards created/edited in the app now reach the server (previously addDeck/addUserCards saved locally only and never synced until a manual push). They now appear across devices.
+- Breakdowns created in the app now sync to the server and the web app (server storage-key fix in the paired server build), and are included in manual Push All / Pull All.
+
+---
+
+## 7.8.1 (build 53) — 2026-07-19
+
+### Fixed
+- AI deck creation (AI Search) failing on Android while the web app worked: the app now routes AI generation through the server (the same reliable path the web uses, with the server's known-good key/model and JSON parsing) whenever you're logged in, falling back to an on-device key only when not logged in.
+- Breakdown "AI Fill" now works via the server too: it calls the server's breakdown endpoint when logged in, and the AI Fill button appears when either a local key is set OR you're logged into the server.
+- Local (on-device key) AI Search no longer silently reports "AI could not generate terms" on any failure - the real error is surfaced. Raised the local token limit so large decks aren't truncated into invalid JSON.
+
+---
+
+## 7.8.0 (build 52) — 2026-07-19
+
+### Added
+- Swap Q/A button on the AI review list: flips term and definition for all generated cards before you create the deck (e.g. capital/country becomes country/capital). Tap again to swap back. Pronunciation is cleared on swap since it applied to the original term.
+
+### Changed
+- "Max cards to generate" is now a ceiling, not a target. For finite topics (e.g. USA state capitals) AI Search returns the complete set (~50) instead of padding with filler up to the max.
+
+---
+
+## 7.7.2 (build 51) — 2026-07-19
+
+### Fixed
+- Landscape study on tablets (e.g. Samsung): the flashcard now fills the left column instead of floating at a fixed small height at the top.
+- Bottom navigation bar was hidden behind the system navigation bar / Samsung taskbar in landscape. It now respects the navigation-bar inset and stays visible (grows to fit rather than clipping its icons).
+- Custom (star) and Breakdown (puzzle) buttons in the landscape study controls now render as outlined pill buttons matching the surrounding Prev/Speak/Next and action buttons, instead of mismatched flat squares.
+
+---
+
+## 7.7.1 (build 50) — 2026-07-19
+
+### Fixed
+- Kenpo card count mismatch: the study view could show more cards than the deck actually has (e.g. 101 vs 89) on devices whose APK still bundled the old kenpo_words.json asset. The embedded asset is now used only as a fallback when the server hasn't delivered the Kenpo deck; once synced kenpo cards are present, the bundled asset is ignored so counts match the server everywhere.
+
+---
+
+## 7.7.0 (build 49) — 2026-07-19
+
+### Added
+- Image scanning with AI: pick a photo of study material, tap Scan Image with AI, and the server's vision model extracts terms/definitions/pronunciations into the review list. Replaces the old "coming soon" placeholder.
+- Document scanning with AI: PDF, Word (.docx), Excel (.xlsx), text, CSV, Markdown. PDFs go to the vision model; .docx/.xlsx are text-extracted on the server (no extra libraries); .json still imports directly without AI. Replaces the old "not implemented in Android" placeholder.
+- AI Search now falls back to server-side generation when no local API key is set but you're logged in — so it works whether keys live on the device or only on the server.
+- FileUploadUtil: reads a picked file into a base64 data URL with proper name/MIME resolution.
+
+### Changed
+- Image/document/keyword scanning all feed the same review-and-select list before deck creation, so you can trim results before saving.
+- Image and document scanning require being logged in to the server (that's where the AI keys and vision access live); a clear prompt shows when you're not.
+
+---
+
+## 7.6.0 (build 48) — 2026-07-19
+
+### Added
+- Login-first startup: on a cold start with no logged-in session, the app now opens on the Login screen instead of an empty To Study page. Reads persisted settings before deciding, so logged-in users are never bounced.
+- StudyDeck.canEdit (server-provided): owner/admins get edit controls; sample decks show a read-only "Sample" chip for everyone else.
+
+### Fixed
+- Kenpo deck showed 0 cards and no edit option: replaceDecksFromServer was discarding the server's kenpo record and decksFlow always injected the 0-card placeholder. The server record (live card count, canEdit) is now stored; the placeholder appears only before the first sync.
+- Stale "88 cards" fallback in the deck switcher header → 0.
+- Deck action buttons (edit/delete/set-default) now gate on canEdit instead of !isBuiltIn.
+
+---
+
+## 7.5.0 (build 47) — 2026-07-17
+
+### Added
+- Scheme (http/https) support for Remote Server Config — push/pull now carries the scheme, ready for the Caddy/TLS cutover. New http/https toggle in the admin Remote Config panel with a live URL preview (default ports 80/443 omitted from built URLs).
+
+### Changed
+- Default server host corrected: sidscri.tplinkdns.com → **sidscri.from-tx.com** (DEFAULT_SERVER_URL, remote-config fallbacks, placeholders).
+- Kenpo deck is no longer embedded in the APK. The kenpo_words.json asset was removed; the deck now lives on the server as an admin-owned default-sample deck and syncs down via /api/sync/user_cards like every other deck (cards arrive tagged serverManaged; server routes owner/admin edits into deck storage and ignores non-owner pushbacks).
+- KENPO_DEFAULT is now a placeholder deck entry (sourceFile null, cardCount 0) so the deck list renders before first sync.
+
+### Fixed
+- android:allowBackup set to false so the plaintext auth token and AI API keys in DataStore are no longer captured in device/cloud backups.
+
+---
+
 ## 7.2.0 (build 44) — 2026-03-15
 
 

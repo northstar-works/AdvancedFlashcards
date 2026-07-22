@@ -153,7 +153,12 @@ object AiGenerationHelper {
         }
         
         val prompt = """
-            Generate up to $maxCards flashcard terms about: $keywords
+            Generate flashcard terms about: $keywords
+            
+            HOW MANY: $maxCards is the MAXIMUM, not a required count. If the topic is a
+            finite/complete set (e.g. "USA state capitals" = 50 states plus territories),
+            generate the complete set and STOP even if that is fewer than $maxCards. Never
+            invent, pad, or duplicate cards just to reach $maxCards.
             
             For each term, provide:
             - term: the vocabulary word or concept
@@ -193,7 +198,9 @@ object AiGenerationHelper {
             }
             cards.filter { it.term.isNotBlank() && it.definition.isNotBlank() }
         } catch (e: Exception) {
-            emptyList()
+            // Surface the real cause instead of silently returning nothing
+            // (previously this produced a misleading "AI could not generate terms").
+            throw Exception("AI generation failed: ${e.message}")
         }
     }
     
@@ -252,7 +259,7 @@ object AiGenerationHelper {
             put("model", model)
             put("messages", messages)
             put("temperature", 0.7)
-            put("max_tokens", 2000)
+            put("max_tokens", 8000)
         }
         
         conn.outputStream.use { it.write(body.toString().toByteArray()) }

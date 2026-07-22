@@ -1,0 +1,45 @@
+REIMPLEMENTATION VERIFY - AdvancedFlashcards Android v7.10.0 (build 55)
+Date: 2026-07-19. Android-only (no server change).
+
+FEATURE: per-deck ephemeral Study Method dropdown + Learned shuffle button.
+
+NEW
+  enum StudyMethod { DEFAULT, SPEAK_FIRST, REVERSE }
+  StudySettings.withStudyMethod(method): derives an EFFECTIVE settings copy
+  (never saved) - REVERSE -> reverseCards=true; SPEAK_FIRST ->
+  autoSpeakOnCardChange=true, reverseCards=false; DEFAULT -> unchanged.
+  StudyMethodDropdown(): compact OutlinedButton + DropdownMenu with the 3
+  options and one-line descriptions.
+  FlipCard/LandscapeStudyLayout gain blankFront: when set (SPEAK_FIRST, front
+  side), the card shows a speaker icon + "Press Speak to hear the term / then
+  tap the card to flip for the answer" instead of the term.
+
+EPHEMERAL BY DESIGN
+  studyMethod is screen-local `var ... by remember { mutableStateOf(DEFAULT) }`
+  in each study screen. It is NOT persisted (no repo/save call) and is
+  independent per screen, so it resets to Default on app restart and never
+  affects other decks - exactly as requested.
+
+WIRING
+  StudyScreen (To Study / Unsure): studyMethod state + effSettings; dropdown in
+  the portrait header next to the existing Shuffle; landscape passes
+  effSettings + blankFront; auto-speak effect keys on studyMethod and uses
+  effSettings.
+  LearnedScreen (Study view): added Shuffle IconButton (shuffleKey reshuffles;
+  now included in the learnedCards remember keys) + StudyMethodDropdown;
+  portrait & landscape use effSettings and blankFront; auto-speak uses
+  effSettings.
+  Settings screen: removed the global "Definition first (reverse)" toggle
+  (now the per-deck Reverse method). reverseCards remains in the model,
+  default false, only produced transiently by withStudyMethod().
+
+NOTES
+  - "flip as normal to show answer" preserved: flipping shows the back
+    (answer) regardless of method; SPEAK_FIRST only blanks the FRONT.
+  - speakDefinitionOnFlip still governed by its own setting; unchanged.
+  - Custom Set screen left as-is (out of the requested scope: To Study/
+    Unsure/Learned). Can be added on request.
+
+VALIDATION: brace/paren balance 0 (excl strings); Tune/Column/CircleShape
+under existing wildcard imports; version bumped via Python (54->55 /
+7.9.0->7.10.0). Compiles in AndroidBuilder. Zip on Linux (gradlew LF+exec).

@@ -27,11 +27,11 @@ import java.net.URL
  */
 object WebAppSync {
     
-    const val DEFAULT_SERVER_URL = "http://sidscri.tplinkdns.com:8009"
+    const val DEFAULT_SERVER_URL = "http://sidscri.from-tx.com:8009"
 
     /**
      * Ensure a URL has http:// prefix. Strips any existing scheme first so
-     * "sidscri.tplinkdns.com:8009", "http://...", and "https://..." all work.
+     * "sidscri.from-tx.com:8009", "http://...", and "https://..." all work.
      */
     fun normalizeUrl(url: String): String {
         val trimmed = url.trim().trimEnd('/')
@@ -400,6 +400,150 @@ object WebAppSync {
             SyncResult(success = false, error = e.message ?: "Sync failed")
         }
     }
+
+    /**
+     * Server-backed breakdown autofill via POST /api/breakdown_autofill.
+     * The server holds the AI keys and known-good model, so this is the
+     * reliable path (same one the web app uses). Returns the parts + literal
+     * meaning, or null on failure.
+     */
+    data class BreakdownPartDto(val part: String, val meaning: String)
+    data class BreakdownResult(val success: Boolean, val parts: List<BreakdownPartDto> = emptyList(), val literal: String = "", val error: String = "")
+
+    suspend fun autofillBreakdownOnServer(
+        serverUrl: String,
+        token: String,
+        term: String,
+        meaning: String = "",
+        group: String = ""
+    ): BreakdownResult = withContext(Dispatchers.IO) {
+        try {
+            val url = URL("$serverUrl/api/breakdown_autofill")
+            val conn = url.openConnection() as HttpURLConnection
+            conn.requestMethod = "POST"
+            conn.setRequestProperty("Content-Type", "application/json")
+            conn.setRequestProperty("Authorization", "Bearer $token")
+            conn.doOutput = true
+            conn.connectTimeout = 20000
+            conn.readTimeout = 60000
+
+            val body = JSONObject().apply {
+                put("term", term)
+                put("meaning", meaning)
+                put("group", group)
+            }
+            conn.outputStream.use { it.write(body.toString().toByteArray()) }
+
+            val code = conn.responseCode
+            val text = (if (code in 200..299) conn.inputStream else conn.errorStream)
+                ?.bufferedReader()?.use { it.readText() } ?: ""
+            if (code !in 200..299) {
+                val msg = runCatching { JSONObject(text).optString("error") }.getOrNull()
+                return@withContext BreakdownResult(false, error = msg?.ifBlank { "Server error $code" } ?: "Server error $code")
+            }
+            val json = JSONObject(text)
+            val sug = json.optJSONObject("suggestion") ?: return@withContext BreakdownResult(false, error = "No suggestion returned")
+            val arr = sug.optJSONArray("parts") ?: JSONArray()
+            val parts = mutableListOf<BreakdownPartDto>()
+            for (i in 0 until arr.length()) {
+                val p = arr.optJSONObject(i) ?: continue
+                val pt = p.optString("part", "")
+                if (pt.isBlank()) continue
+                parts.add(BreakdownPartDto(pt, p.optString("meaning", "")))
+            }
+            BreakdownResult(true, parts = parts, literal = sug.optString("literal", ""))
+        } catch (e: Exception) {
+            BreakdownResult(false, error = e.message ?: "Breakdown failed")
+        }
+    }
+
+    /**
+     * Result of a server-backed AI deck generation call.
+     */
+    data class AiDeckResult(
+        val success: Boolean,
+        val cards: List<AiGeneratedTerm> = emptyList(),
+        val error: String = ""
+    )
+
+    /**
+     * Generate flashcards on the SERVER via POST /api/ai/generate_deck.
+     * Used for image (photo) and document scanning, which need the server's
+     * vision API access and document text extraction. The server holds the
+     * API keys, so nothing sensitive is sent from the device.
+     *
+     * @param genType "photo" | "document" | "keywords"
+     * @param imageDataUrl base64 data URL for photos (data:image/...;base64,....)
+     * @param docName / docType / docContentDataUrl for documents
+     */
+    suspend fun generateDeckOnServer(
+        serverUrl: String,
+        token: String,
+        genType: String,
+        maxCards: Int,
+        keywords: String = "",
+        imageDataUrl: String = "",
+        docName: String = "",
+        docType: String = "",
+        docContentDataUrl: String = ""
+    ): AiDeckResult = withContext(Dispatchers.IO) {
+        try {
+            val url = URL("$serverUrl/api/ai/generate_deck")
+            val conn = url.openConnection() as HttpURLConnection
+            conn.requestMethod = "POST"
+            conn.setRequestProperty("Content-Type", "application/json")
+            conn.setRequestProperty("Authorization", "Bearer $token")
+            conn.doOutput = true
+            conn.connectTimeout = 20000
+            conn.readTimeout = 120000  // vision/doc calls can be slow
+
+            val body = JSONObject().apply {
+                put("type", genType)
+                put("maxCards", maxCards)
+                when (genType) {
+                    "keywords" -> put("keywords", keywords)
+                    "photo" -> put("imageData", imageDataUrl)
+                    "document" -> put("document", JSONObject().apply {
+                        put("name", docName)
+                        put("type", docType)
+                        put("content", docContentDataUrl)
+                    })
+                }
+            }
+
+            conn.outputStream.use { it.write(body.toString().toByteArray()) }
+
+            val code = conn.responseCode
+            val text = (if (code in 200..299) conn.inputStream else conn.errorStream)
+                ?.bufferedReader()?.use { it.readText() } ?: ""
+
+            if (code !in 200..299) {
+                val msg = runCatching { JSONObject(text).optString("error") }.getOrNull()
+                return@withContext AiDeckResult(false, error = msg?.ifBlank { "Server error $code" } ?: "Server error $code")
+            }
+
+            val json = JSONObject(text)
+            val arr = json.optJSONArray("cards") ?: JSONArray()
+            val cards = mutableListOf<AiGeneratedTerm>()
+            for (i in 0 until arr.length()) {
+                val c = arr.optJSONObject(i) ?: continue
+                val term = c.optString("term", "")
+                val def = c.optString("definition", c.optString("meaning", ""))
+                if (term.isBlank()) continue
+                cards.add(AiGeneratedTerm(
+                    term = term,
+                    definition = def,
+                    pronunciation = c.optString("pronunciation", c.optString("pron", "")),
+                    group = c.optString("group", "General").ifBlank { "General" }
+                ))
+            }
+            if (cards.isEmpty()) AiDeckResult(false, error = "AI returned no usable cards")
+            else AiDeckResult(true, cards = cards)
+        } catch (e: Exception) {
+            AiDeckResult(false, error = e.message ?: "Generation failed")
+        }
+    }
+
     
     /**
      * API Keys sync result
@@ -514,7 +658,8 @@ object WebAppSync {
                 val json = JSONObject(body)
                 val config = RemoteConfig(
                     serverType = json.optString("server_type", "standalone"),
-                    host       = json.optString("host", "sidscri.tplinkdns.com"),
+                    scheme     = json.optString("scheme", "http"),
+                    host       = json.optString("host", "sidscri.from-tx.com"),
                     port       = json.optInt("port", 8009),
                     updatedAt  = json.optString("updated_at", ""),
                     updatedBy  = json.optString("updated_by", "")
@@ -545,6 +690,7 @@ object WebAppSync {
 
             val body = JSONObject().apply {
                 put("server_type", config.serverType)
+                put("scheme", config.scheme)
                 put("host", config.host)
                 put("port", config.port)
             }
@@ -726,7 +872,8 @@ object WebAppSync {
                         cardCount = dObj.optInt("cardCount", 0),
                         createdAt = dObj.optLong("createdAt", 0),
                         updatedAt = dObj.optLong("updatedAt", 0),
-                        logoPath = dObj.optString("logoPath", null)
+                        logoPath = dObj.optString("logoPath", null),
+                        canEdit = dObj.optBoolean("canEdit", true)
                     ))
                 }
                 
@@ -941,7 +1088,7 @@ object WebAppSync {
  * SERVER IMPLEMENTATION GUIDE
  * ===========================
  * 
- * Your Express.js server at http://sidscri.tplinkdns.com:8009 needs these endpoints:
+ * Your Express.js server at http://sidscri.from-tx.com:8009 needs these endpoints:
  * 
  * Data directory: C:/Program Files/Advanced Flashcards/_internal/data/
  * 

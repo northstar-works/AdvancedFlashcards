@@ -31,18 +31,20 @@ data class StudyDeck(
     val createdAt: Long,         // Unix timestamp
     val updatedAt: Long,         // Unix timestamp
     val logoPath: String? = null, // Optional server logo path
-    val descriptiveDefinitions: Boolean = false // If true, AI generates longer explanatory definitions
+    val descriptiveDefinitions: Boolean = false, // If true, AI generates longer explanatory definitions
+    val canEdit: Boolean = true  // Server-provided: owner/admin may edit (sample decks read-only for others)
 ) {
     companion object {
-        // Default Kenpo deck - built-in and cannot be deleted
+        // Default Kenpo deck placeholder - cards are server-sourced (default-sample
+        // deck owned by the admin) and arrive via sync; nothing is embedded.
         val KENPO_DEFAULT = StudyDeck(
             id = "kenpo",
             name = "Kenpo Vocabulary",
             description = "Korean martial arts terminology for Kenpo students",
             isDefault = true,
             isBuiltIn = true,
-            sourceFile = "kenpo_words.json",
-            cardCount = 88,
+            sourceFile = null,
+            cardCount = 0,
             createdAt = 0L,
             updatedAt = 0L
         )
@@ -124,19 +126,23 @@ data class TermBreakdown(
 data class RemoteConfig(
     /** "standalone" | "packaged" | "rpi" | "docker" */
     val serverType: String = "standalone",
-    /** Hostname or IP without scheme (e.g. "sidscri.tplinkdns.com" or "192.168.1.50") */
-    val host: String = "sidscri.tplinkdns.com",
+    /** "http" | "https" — https once the server is behind Caddy with TLS */
+    val scheme: String = "http",
+    /** Hostname or IP without scheme (e.g. "sidscri.from-tx.com" or "192.168.1.50") */
+    val host: String = "sidscri.from-tx.com",
     val port: Int = 8009,
     val updatedAt: String = "",
     val updatedBy: String = ""
 ) {
-    /** Builds a full base URL: http://<host>:<port>  (no trailing slash) */
+    /** Builds a full base URL: <scheme>://<host>[:<port>]  (no trailing slash; default ports omitted) */
     fun toBaseUrl(): String {
+        val cleanScheme = if (scheme.equals("https", ignoreCase = true)) "https" else "http"
         val cleanHost = host
             .removePrefix("http://")
             .removePrefix("https://")
             .trimEnd('/')
-        return "http://$cleanHost:$port"
+        val isDefaultPort = (cleanScheme == "http" && port == 80) || (cleanScheme == "https" && port == 443)
+        return if (isDefaultPort) "$cleanScheme://$cleanHost" else "$cleanScheme://$cleanHost:$port"
     }
 
     val serverTypeLabel: String

@@ -13,32 +13,54 @@ class Repository(private val context: Context, private val store: Store) {
     
     private fun loadDefaultCards(): List<FlashCard> {
         cachedDefaults?.let { return it }
-        val json = context.assets.open("kenpo_words.json").bufferedReader().use { it.readText() }
-        val cards = JsonUtil.readAssetCards(json)
+        // The Kenpo deck is no longer embedded in the app. It now lives on the
+        // server as an admin-owned default-sample deck and arrives via sync
+        // (/api/sync/user_cards) like every other deck. The asset read remains
+        // only as a legacy fallback for old builds that still bundle the file.
+        val cards = try {
+            val json = context.assets.open("kenpo_words.json").bufferedReader().use { it.readText() }
+            JsonUtil.readAssetCards(json)
+        } catch (_: Exception) {
+            emptyList()
+        }
         cachedDefaults = cards
         return cards
     }
 
     fun allCardsFlow(): Flow<List<FlashCard>> {
-        val defaults = loadDefaultCards()
         return combine(store.customCardsFlow(), store.userCardsFlow(), progressFlow()) { custom, user, _ ->
-            (defaults + custom + user).distinctBy { it.id }
+            mergeWithDefaults(custom, user)
         }
     }
     
     // Cards filtered by active deck
     fun activeCardsFlow(): Flow<List<FlashCard>> {
-        val defaults = loadDefaultCards()
         return combine(store.customCardsFlow(), store.userCardsFlow(), store.deckSettingsFlow()) { custom, user, deckSettings ->
-            val allCards = (defaults + custom + user).distinctBy { it.id }
+            val allCards = mergeWithDefaults(custom, user)
             val activeDeckId = deckSettings.activeDeckId
-            // "kenpo" is the default built-in deck
+            // "kenpo" is the default sample deck
             if (activeDeckId == "kenpo") {
                 allCards.filter { it.deckId == null || it.deckId == "kenpo" }
             } else {
                 allCards.filter { it.deckId == activeDeckId }
             }
         }
+    }
+
+    /**
+     * Merge cards, using the embedded Kenpo asset ONLY as a fallback for when
+     * the server hasn't yet delivered the (now server-owned) Kenpo deck.
+     *
+     * Kenpo migrated from an app-embedded deck to a server-owned default-sample
+     * deck. On devices whose APK still bundles kenpo_words.json, blindly merging
+     * those asset cards on top of the synced set double-counts the deck (e.g.
+     * 101 shown vs 89 on the server). So: if the synced cards already contain
+     * any kenpo cards, drop the embedded defaults entirely.
+     */
+    private fun mergeWithDefaults(custom: List<FlashCard>, user: List<FlashCard>): List<FlashCard> {
+        val syncedHasKenpo = user.any { (it.deckId ?: "kenpo") == "kenpo" }
+        val defaults = if (syncedHasKenpo) emptyList() else loadDefaultCards()
+        return (defaults + custom + user).distinctBy { it.id }
     }
     
     fun getGroups(): List<String> = loadDefaultCards().map { it.group }.distinct().sorted()
@@ -83,17 +105,15 @@ class Repository(private val context: Context, private val store: Store) {
     fun decksFlow(): Flow<List<StudyDeck>> = store.decksFlow()
     fun deckSettingsFlow(): Flow<DeckSettings> = store.deckSettingsFlow()
     suspend fun saveDeckSettings(settings: DeckSettings) = store.saveDeckSettings(settings)
-    suspend fun addDeck(deck: StudyDeck) = store.addDeck(deck)
+    suspend fun addDeck(deck: StudyDeck) {
+        store.addDeck(deck)
+        markPendingSync()
+        attemptAutoPushIfEnabled()
+    }
     suspend fun deleteDeck(deckId: String) {
         store.deleteDeck(deckId)
-        // Sync deletion to server if logged in
-        try {
-            val admin = adminSettingsFlow().first()
-            if (admin.isLoggedIn && admin.authToken.isNotBlank()) {
-                // Note: Server handles deck deletion differently - user-created decks only
-                // For now, local deletion is sufficient as server will sync on next pull
-            }
-        } catch (_: Exception) {}
+        markPendingSync()
+        attemptAutoPushIfEnabled()
     }
     
     /**
@@ -109,9 +129,12 @@ class Repository(private val context: Context, private val store: Store) {
             if (admin.isLoggedIn && admin.authToken.isNotBlank()) {
                 val serverUrl = admin.webAppUrl.ifBlank { WebAppSync.DEFAULT_SERVER_URL }
                 val result = WebAppSync.updateDeck(serverUrl, admin.authToken, deckId, name, description)
+                markPendingSync()
+                attemptAutoPushIfEnabled()
                 return result.success
             }
         } catch (_: Exception) {}
+        markPendingSync()
         return true // Local update succeeded
     }
     
@@ -154,8 +177,16 @@ class Repository(private val context: Context, private val store: Store) {
     }
     
     fun userCardsFlow(): Flow<List<FlashCard>> = store.userCardsFlow()
-    suspend fun addUserCard(card: FlashCard) = store.addUserCard(card)
-    suspend fun addUserCards(cards: List<FlashCard>) = store.addUserCards(cards)
+    suspend fun addUserCard(card: FlashCard) {
+        store.addUserCard(card)
+        markPendingSync()
+        attemptAutoPushIfEnabled()
+    }
+    suspend fun addUserCards(cards: List<FlashCard>) {
+        store.addUserCards(cards)
+        markPendingSync()
+        attemptAutoPushIfEnabled()
+    }
     
     /**
      * Delete user card (with server sync)
@@ -172,7 +203,11 @@ class Repository(private val context: Context, private val store: Store) {
         } catch (_: Exception) {}
     }
     
-    suspend fun updateUserCard(card: FlashCard) = store.updateUserCard(card)
+    suspend fun updateUserCard(card: FlashCard) {
+        store.updateUserCard(card)
+        markPendingSync()
+        attemptAutoPushIfEnabled()
+    }
     
     // Breakdowns
     fun breakdownsFlow(): Flow<Map<String, TermBreakdown>> = store.breakdownsFlow()
@@ -187,10 +222,22 @@ class Repository(private val context: Context, private val store: Store) {
             val token = admin.authToken
             if (admin.isLoggedIn && token.isNotBlank()) {
                 val serverUrl = admin.webAppUrl.ifBlank { WebAppSync.DEFAULT_SERVER_URL }
-                WebAppSync.saveBreakdown(serverUrl, token, breakdown)
+                val res = WebAppSync.saveBreakdown(serverUrl, token, breakdown)
+                val fresh = adminSettingsFlow().first()
+                if (res.success) {
+                    saveAdminSettings(fresh.copy(lastSyncStatus = "green", lastSyncTime = System.currentTimeMillis(), pendingSync = false))
+                } else {
+                    saveAdminSettings(fresh.copy(lastSyncStatus = "red", pendingSync = true))
+                }
+            } else {
+                markPendingSync()
+                val fresh = adminSettingsFlow().first()
+                saveAdminSettings(fresh.copy(lastSyncStatus = "orange"))
             }
         } catch (_: Exception) {
             // Keep local save even if server upload fails
+            val fresh = adminSettingsFlow().first()
+            saveAdminSettings(fresh.copy(lastSyncStatus = "orange", pendingSync = true))
         }
     }
 suspend fun deleteBreakdown(cardId: String) = store.deleteBreakdown(cardId)
@@ -296,6 +343,22 @@ suspend fun deleteBreakdown(cardId: String) = store.deleteBreakdown(cardId)
         }
         return result
     }
+
+    /** Push every local breakdown to the server (used by full sync). */
+    suspend fun syncPushBreakdowns(token: String, serverUrl: String): WebAppSync.SyncResult {
+        if (token.isBlank()) return WebAppSync.SyncResult(success = false, error = "No auth token")
+        val url = serverUrl.ifBlank { WebAppSync.DEFAULT_SERVER_URL }
+        val local = store.breakdownsFlow().first()
+        var failed = 0
+        var lastErr = ""
+        for ((_, bd) in local) {
+            if (bd.parts.isEmpty() && bd.literal.isBlank()) continue  // skip empty
+            val res = WebAppSync.saveBreakdown(url, token, bd)
+            if (!res.success) { failed++; lastErr = res.error }
+        }
+        return if (failed == 0) WebAppSync.SyncResult(success = true, message = "Breakdowns pushed")
+               else WebAppSync.SyncResult(success = false, error = "$failed breakdown(s) failed: $lastErr")
+    }
     
     // Auto-fill breakdown with selected AI service
     suspend fun autoFillBreakdown(cardId: String, term: String, useAI: Boolean = false): TermBreakdown {
@@ -303,6 +366,25 @@ suspend fun deleteBreakdown(cardId: String) = store.deleteBreakdown(cardId)
         
         if (!useAI) {
             return ChatGptHelper.createBasicBreakdown(cardId, term)
+        }
+
+        // Prefer the server (same reliable path the web app uses: server holds
+        // the AI keys and a known-good model). Fall back to on-device keys only
+        // if not logged in or the server call fails.
+        if (admin.isLoggedIn && admin.authToken.isNotBlank() && admin.webAppUrl.isNotBlank()) {
+            val res = WebAppSync.autofillBreakdownOnServer(admin.webAppUrl, admin.authToken, term)
+            if (res.success && res.parts.isNotEmpty()) {
+                return TermBreakdown(
+                    id = cardId,
+                    term = term,
+                    parts = res.parts.map { BreakdownPart(it.part, it.meaning) },
+                    literal = res.literal,
+                    notes = "",
+                    updatedAt = System.currentTimeMillis() / 1000,
+                    updatedBy = admin.username.ifBlank { null }
+                )
+            }
+            // If the server produced nothing useful, continue to local fallback below.
         }
         
         // Determine which AI to use based on settings
@@ -479,12 +561,41 @@ suspend fun deleteBreakdown(cardId: String) = store.deleteBreakdown(cardId)
     }
 
     private suspend fun attemptAutoPushIfEnabled() {
+        autoSyncPush()
+    }
+
+    /**
+     * Best-effort full auto-sync of local changes to the server. Called after
+     * any local mutation (deck, card, breakdown, progress). Updates the sync
+     * status indicator:
+     *   green  = all changes pushed successfully
+     *   orange = changes pending (not logged in / offline / partial)
+     *   red    = a push was attempted and failed
+     * Never throws; failures leave the local data intact and the queue pending.
+     */
+    suspend fun autoSyncPush() {
         val admin = adminSettingsFlow().first()
         if (!admin.autoPushOnChange) return
-        if (!admin.isLoggedIn) return
-        if (admin.authToken.isBlank()) return
-        // Best-effort: push pending deltas; if it fails we keep the queue.
-        syncPushPendingProgressWithToken(admin.authToken, admin.webAppUrl)
+        if (!admin.isLoggedIn || admin.authToken.isBlank()) {
+            // Can't push right now: mark pending (orange) so the UI shows it.
+            saveAdminSettings(admin.copy(pendingSync = true, lastSyncStatus = "orange"))
+            return
+        }
+        try {
+            val result = syncPushAll(admin.authToken, admin.webAppUrl)
+            val now = System.currentTimeMillis()
+            val fresh = adminSettingsFlow().first()
+            if (result.success) {
+                saveAdminSettings(fresh.copy(pendingSync = false, lastSyncStatus = "green", lastSyncTime = now))
+            } else {
+                // Push failed (server error): red, keep pending for retry.
+                saveAdminSettings(fresh.copy(pendingSync = true, lastSyncStatus = "red"))
+            }
+        } catch (_: Exception) {
+            // Network/offline: orange (will retry), not a hard failure.
+            val fresh = adminSettingsFlow().first()
+            saveAdminSettings(fresh.copy(pendingSync = true, lastSyncStatus = "orange"))
+        }
     }
 
     // Mark pending sync (for offline changes)
@@ -646,6 +757,12 @@ suspend fun deleteBreakdown(cardId: String) = store.deleteBreakdown(cardId)
         val progressResult = syncPushProgressWithToken(token, url)
         if (!progressResult.success) {
             errors.add("Progress: ${progressResult.error}")
+        }
+
+        // Push breakdowns
+        val bdResult = syncPushBreakdowns(token, url)
+        if (!bdResult.success) {
+            errors.add("Breakdowns: ${bdResult.error}")
         }
         
         return if (errors.isEmpty()) {

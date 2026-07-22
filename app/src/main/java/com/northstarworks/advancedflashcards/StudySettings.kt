@@ -116,8 +116,11 @@ data class AdminSettings(
     
     // Auto-sync settings
     val autoPullOnLogin: Boolean = true,
-    val autoPushOnChange: Boolean = false,
+    val autoPushOnChange: Boolean = true,   // Auto-push local changes to the server
     val pendingSync: Boolean = false,  // True if changes made while offline
+    /** Last sync outcome for the status indicator: "green" (synced),
+     *  "orange" (changes pending upload), "red" (last sync failed), "" (never). */
+    val lastSyncStatus: String = "",
     
     // Breakdown AI selection
     val breakdownAiChoice: BreakdownAiChoice = BreakdownAiChoice.AUTO_SELECT

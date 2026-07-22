@@ -1,0 +1,47 @@
+REIMPLEMENTATION VERIFY - AdvancedFlashcards Android v7.9.0 (build 54)
+Date: 2026-07-19. Pairs with server build advanced_flashcards_server_20260719e.
+
+FEATURE: automatic cross-device sync for decks/cards/breakdowns + status light.
+
+WHY DECKS WEREN'T SYNCING
+  addDeck() and addUserCards()/addUserCard()/updateUserCard() were bare
+  store.* calls with NO sync trigger - only progress (setStatus) auto-pushed.
+  So app-created decks/cards stayed local until a manual Push All. Now every
+  mutation triggers auto-sync.
+
+CHANGES
+  StudySettings.kt: AdminSettings gains lastSyncStatus ("green"/"orange"/
+  "red"/""). autoPushOnChange now defaults true.
+  Store.kt: encode/decode lastSyncStatus; autoPushOnChange default true.
+  Repository.kt:
+    - New autoSyncPush(): best-effort syncPushAll; sets status green (ok),
+      orange (offline/not logged in -> pending, retried), red (server error).
+      attemptAutoPushIfEnabled() now delegates to it.
+    - Sync hooks added to addDeck, addUserCard, addUserCards, updateUserCard,
+      deleteDeck, updateDeck (previously unsynced).
+    - saveBreakdown(): sets green/red/orange status on server upload result.
+    - New syncPushBreakdowns(); syncPushAll() now also pushes breakdowns.
+  MainActivity.kt:
+    - Settings: colored status dot + "Last synced: <relative time>" under the
+      Sync Progress button (new formatRelativeTime helper; CircleShape/clip
+      imports added).
+    - Manual Push All / Pull All set green/red status; Pull All also pulls
+      breakdowns (repo.syncBreakdowns) and Push All includes them.
+
+CONFLICT MODEL (answering the user's question)
+  Sync is last-writer-wins per record, no field merge:
+  - PULL overwrites local decks/cards/breakdowns with the server copy
+    (replaceDecksFromServer / replaceUserCardsFromServer are authoritative);
+    local un-pushed edits to those records are lost on pull.
+  - PUSH overwrites the server copy with local. Breakdowns: only admin
+    (sidscri) may overwrite an existing server breakdown (server enforces
+    403 overwrite_not_allowed for non-admins).
+  - Progress syncs as pending deltas (per-card status), so it merges by card.
+  Practical guidance surfaced via the status light: if it's orange/red you
+  have unsynced local changes - push before pulling on another device to
+  avoid losing them.
+
+VALIDATION: brace/paren balance 0 (excl strings) on all 5 edited files;
+server breakdown round-trip + 50-test regression PASS. Version bumped via
+Python (53->54 / 7.8.1->7.9.0). Compiles in AndroidBuilder. Zip on Linux
+(gradlew LF + exec bit).

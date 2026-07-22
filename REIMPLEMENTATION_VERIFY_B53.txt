@@ -1,0 +1,34 @@
+REIMPLEMENTATION VERIFY - AdvancedFlashcards Android v7.8.1 (build 53)
+Date: 2026-07-19
+Android-only. Pairs with existing server build advanced_flashcards_server_20260719d
+(no server changes this round; the breakdown endpoint already existed).
+
+PROBLEM: AI deck creation + breakdown auto-fill failed on Android; web worked.
+CAUSE: Android ran AI locally via the on-device key/model. If the key pulled
+from the server was blank/masked, the model name was empty/outdated, or a large
+response exceeded max_tokens=2000 (invalid JSON), the local call failed - and
+searchAndGenerateTerms swallowed the exception into emptyList(), showing the
+misleading "AI could not generate terms". The web app never hit this because it
+generates on the SERVER.
+
+FIXES
+1. MainActivity.kt (AI Search): prefer WebAppSync.generateDeckOnServer when
+   logged in (canUseServer); on-device key only as fallback. Same path as web.
+2. WebAppSync.kt: new autofillBreakdownOnServer() -> POST /api/breakdown_autofill
+   (server holds keys/model; endpoint accepts the Android Bearer token via the
+   already-bridged current_user_id). Returns parts + literal.
+   (Also fixed a paste artifact that had split the AiDeckResult data class.)
+3. Repository.kt (autoFillBreakdown): try the server first when logged in, then
+   fall back to on-device ChatGpt/Gemini helpers.
+4. MainActivity.kt (BreakdownDialog): show "AI Fill" when a local key is set OR
+   logged into the server (previously local-key only, so server-only-key users
+   never saw the button).
+5. AiGenerationHelper.kt: local searchAndGenerateTerms now rethrows the real
+   error instead of returning emptyList(); max_tokens 2000 -> 8000 so large
+   decks aren't truncated.
+
+VALIDATION: brace/paren balance 0 on all four edited files (excl strings);
+server /api/breakdown_autofill verified via Bearer token (curated fallback
+splits a 3-word term; 401 when unauthenticated). Full 50-test server regression
+PASS. Version bumped via Python (52->53 / 7.8.0->7.8.1). Compiles in
+AndroidBuilder. Zip built on Linux (gradlew keeps LF + exec bit).

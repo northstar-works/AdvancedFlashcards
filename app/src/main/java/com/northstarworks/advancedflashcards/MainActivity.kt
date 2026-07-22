@@ -20,6 +20,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -42,7 +44,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.absoluteValue
@@ -103,6 +107,21 @@ fun AppRoot() {
     val nav = rememberNavController()
     val adminSettings by repo.adminSettingsFlow().collectAsState(initial = AdminSettings())
 
+    // On a cold start, land on the Login screen if the user is not logged in.
+    // Reads the persisted settings directly (first emission) so the initial
+    // default AdminSettings() value can't cause a false redirect for
+    // logged-in users. rememberSaveable prevents re-redirecting on rotation.
+    var didStartupAuthCheck by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        if (!didStartupAuthCheck) {
+            didStartupAuthCheck = true
+            val persisted = runCatching { repo.adminSettingsFlow().first() }.getOrNull()
+            if (persisted != null && (!persisted.isLoggedIn || persisted.authToken.isBlank())) {
+                nav.navigate(Route.Login.path)
+            }
+        }
+    }
+
     // Automatic pull on app start for logged-in users.
     LaunchedEffect(adminSettings.isLoggedIn, adminSettings.authToken, adminSettings.webAppUrl) {
         if (adminSettings.isLoggedIn && adminSettings.authToken.isNotBlank()) {
@@ -153,7 +172,12 @@ fun isLandscape(): Boolean = LocalConfiguration.current.orientation == Configura
 private fun NavBar(nav: NavHostController, currentRoute: String) {
     val landscape = isLandscape()
     if (landscape) {
-        NavigationBar(containerColor = DarkPanel, modifier = Modifier.height(56.dp)) {
+        NavigationBar(
+            containerColor = DarkPanel,
+            modifier = Modifier
+                .defaultMinSize(minHeight = 56.dp)
+                .windowInsetsPadding(WindowInsets.navigationBars.only(WindowInsetsSides.Bottom))
+        ) {
             NavigationBarItem(icon = { Icon(Icons.Default.School, "To Study", Modifier.size(20.dp)) }, label = null, selected = currentRoute == Route.Active.path, onClick = { nav.navigate(Route.Active.path) { popUpTo(Route.Active.path) { inclusive = true } } })
             NavigationBarItem(icon = { Icon(Icons.Default.Help, "Unsure", Modifier.size(20.dp)) }, label = null, selected = currentRoute == Route.Unsure.path, onClick = { nav.navigate(Route.Unsure.path) })
             NavigationBarItem(icon = { Icon(Icons.Default.CheckCircle, "Learned", Modifier.size(20.dp)) }, label = null, selected = currentRoute == Route.Learned.path, onClick = { nav.navigate(Route.Learned.path) })
@@ -196,14 +220,17 @@ private fun statusDisplayName(status: CardStatus): String = when(status) {
 }
 
 @Composable
-fun FlipCard(card: FlashCard, breakdown: TermBreakdown?, showFront: Boolean, settings: StudySettings, onFlip: () -> Unit, onSwipeNext: () -> Unit, onSwipePrev: () -> Unit) {
+fun FlipCard(card: FlashCard, breakdown: TermBreakdown?, showFront: Boolean, settings: StudySettings, onFlip: () -> Unit, onSwipeNext: () -> Unit, onSwipePrev: () -> Unit, fillHeight: Boolean = false, blankFront: Boolean = false) {
     val rotation by animateFloatAsState(if (showFront) 0f else 180f, tween(260), label = "flip")
     val showFrontSide = rotation.absoluteValue <= 90f
     var dragTotal by remember { mutableStateOf(0f) }
     val landscape = isLandscape()
-    val cardHeight = if (landscape) 220.dp else 260.dp  // Increased landscape height to fill space
+    val cardHeight = if (landscape) 220.dp else 260.dp  // portrait / fallback height
+    // When fillHeight is set (landscape study on a tablet), grow to fill the
+    // column instead of floating at a fixed small height.
+    val sizeModifier = if (fillHeight) Modifier.fillMaxWidth().fillMaxHeight() else Modifier.fillMaxWidth().height(cardHeight)
     Card(
-        modifier = Modifier.fillMaxWidth().height(cardHeight)
+        modifier = sizeModifier
             .pointerInput(Unit) { detectHorizontalDragGestures(onDragStart = { dragTotal = 0f }, onHorizontalDrag = { _, d -> dragTotal += d }, onDragEnd = { if (dragTotal <= -90f) onSwipeNext(); if (dragTotal >= 90f) onSwipePrev(); dragTotal = 0f }) }
             .graphicsLayer { rotationY = rotation; cameraDistance = 12f * density }.clickable { onFlip() },
         colors = CardDefaults.cardColors(containerColor = DarkPanel), elevation = CardDefaults.cardElevation(6.dp)
@@ -215,6 +242,14 @@ fun FlipCard(card: FlashCard, breakdown: TermBreakdown?, showFront: Boolean, set
             val isDefSide = if (settings.reverseCards) showFrontSide else !showFrontSide
             if (showFrontSide) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()) {
+                    if (blankFront) {
+                        Spacer(Modifier.weight(1f))
+                        Icon(Icons.Default.VolumeUp, "Speak", tint = AccentBlue, modifier = Modifier.size(40.dp))
+                        Spacer(Modifier.height(12.dp))
+                        Text("Press Speak to hear the term", color = DarkMuted, textAlign = TextAlign.Center, fontSize = 14.sp)
+                        Text("then tap the card to flip for the answer", color = DarkMuted, textAlign = TextAlign.Center, fontSize = 11.sp)
+                        Spacer(Modifier.weight(1f)); Text("Tap to flip", color = DarkMuted, fontSize = 10.sp)
+                    } else {
                     Text(frontText, style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center, color = Color.White, fontSize = if (landscape) 18.sp else 22.sp)
                     if (!settings.reverseCards && !card.pron.isNullOrBlank()) { Spacer(Modifier.height(4.dp)); Text("(${card.pron})", color = DarkMuted, fontSize = 12.sp) }
                     Spacer(Modifier.height(4.dp))
@@ -222,6 +257,7 @@ fun FlipCard(card: FlashCard, breakdown: TermBreakdown?, showFront: Boolean, set
                     if (settings.showSubgroup && !card.subgroup.isNullOrBlank()) Text(card.subgroup, fontSize = 11.sp, color = DarkMuted)
                     if (isDefSide && settings.showBreakdownOnDefinition && breakdown?.hasContent() == true) { Spacer(Modifier.height(6.dp)); BreakdownInline(breakdown, landscape) }
                     Spacer(Modifier.weight(1f)); Text("Tap to flip", color = DarkMuted, fontSize = 10.sp)
+                    }
                 }
             } else {
                 Box(Modifier.graphicsLayer { rotationY = 180f }.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -258,7 +294,7 @@ fun BreakdownDialog(card: FlashCard, breakdown: TermBreakdown?, adminSettings: A
                 Spacer(Modifier.height(4.dp))
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(onClick = { parts = ChatGptHelper.autoSplitTerm(card.term).map { BreakdownPart(it, "") }.toMutableList() }, modifier = Modifier.weight(1f)) { Text("Auto-Split", fontSize = 11.sp) }
-                    if (adminSettings.chatGptEnabled && adminSettings.chatGptApiKey.isNotBlank()) {
+                    if ((adminSettings.chatGptEnabled && adminSettings.chatGptApiKey.isNotBlank()) || (adminSettings.isLoggedIn && adminSettings.authToken.isNotBlank())) {
                         Button(onClick = { onAutoFill(true) }, modifier = Modifier.weight(1f)) { Text("AI Fill", fontSize = 11.sp) }
                     }
                 }
@@ -285,6 +321,24 @@ fun BreakdownDialog(card: FlashCard, breakdown: TermBreakdown?, adminSettings: A
     }
 }
 
+/**
+ * Ephemeral per-deck study method. Held in screen-local state (remember), so it
+ * resets to DEFAULT on app restart and never persists nor affects other decks.
+ *   DEFAULT     - normal: term on front, flip for definition.
+ *   SPEAK_FIRST - front is blank with a prompt to press Speak; auto-speaks on
+ *                 each new card; flip reveals the answer as normal.
+ *   REVERSE     - definition on front (uses reverseCards behavior).
+ */
+enum class StudyMethod { DEFAULT, SPEAK_FIRST, REVERSE }
+
+/** Derive effective StudySettings for the chosen ephemeral study method,
+ *  without mutating or saving the user's real settings. */
+private fun StudySettings.withStudyMethod(method: StudyMethod): StudySettings = when (method) {
+    StudyMethod.DEFAULT -> this
+    StudyMethod.REVERSE -> this.copy(reverseCards = true)
+    StudyMethod.SPEAK_FIRST -> this.copy(reverseCards = false, autoSpeakOnCardChange = true)
+}
+
 private fun sortCards(cards: List<FlashCard>, sortMode: SortMode, randomize: Boolean): List<FlashCard> {
     if (randomize) return cards.shuffled()
     return when (sortMode) {
@@ -306,6 +360,28 @@ private fun GroupFilterDropdown(groups: List<String>, selectedGroup: String?, on
     DropdownMenu(expanded, { expanded = false }) {
         DropdownMenuItem(text = { Text("All Cards", color = Color.White, fontSize = 12.sp) }, onClick = { onSelect(null); expanded = false })
         groups.forEach { g -> DropdownMenuItem(text = { Text(g, color = Color.White, fontSize = 12.sp) }, onClick = { onSelect(g); expanded = false }) }
+    }
+}
+
+// Ephemeral per-deck study method picker (resets on restart; does not persist).
+@Composable
+private fun StudyMethodDropdown(method: StudyMethod, onSelect: (StudyMethod) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    val label = when (method) {
+        StudyMethod.DEFAULT -> "Default"
+        StudyMethod.SPEAK_FIRST -> "Speak first"
+        StudyMethod.REVERSE -> "Reverse"
+    }
+    OutlinedButton({ expanded = true }, modifier = Modifier.height(36.dp)) {
+        Icon(Icons.Default.Tune, "Study method", Modifier.size(14.dp))
+        Spacer(Modifier.width(4.dp))
+        Text(label, fontSize = 10.sp, maxLines = 1)
+        Icon(Icons.Default.ArrowDropDown, "Method", Modifier.size(16.dp))
+    }
+    DropdownMenu(expanded, { expanded = false }) {
+        DropdownMenuItem(text = { Column { Text("Default", color = Color.White, fontSize = 12.sp); Text("Term first, flip for answer", color = DarkMuted, fontSize = 9.sp) } }, onClick = { onSelect(StudyMethod.DEFAULT); expanded = false })
+        DropdownMenuItem(text = { Column { Text("Speak first", color = Color.White, fontSize = 12.sp); Text("Blank card; press Speak, then flip", color = DarkMuted, fontSize = 9.sp) } }, onClick = { onSelect(StudyMethod.SPEAK_FIRST); expanded = false })
+        DropdownMenuItem(text = { Column { Text("Reverse", color = Color.White, fontSize = 12.sp); Text("Definition first", color = DarkMuted, fontSize = 9.sp) } }, onClick = { onSelect(StudyMethod.REVERSE); expanded = false })
     }
 }
 
@@ -338,14 +414,15 @@ private fun LandscapeStudyLayout(
     onBreakdown: () -> Unit,
     onReturnTop: () -> Unit,
     showGroupFilter: Boolean = true,
-    onShuffle: (() -> Unit)? = null
+    onShuffle: (() -> Unit)? = null,
+    blankFront: Boolean = false
 ) {
     var searchExpanded by remember { mutableStateOf(false) }
     Row(Modifier.fillMaxSize().padding(8.dp)) {
         // Left: Card
-        Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(Modifier.weight(1f).fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally) {
             if (current != null) {
-                FlipCard(current, currentBreakdown, showFront, settings, onFlip, onNext, onPrev)
+                FlipCard(current, currentBreakdown, showFront, settings, onFlip, onNext, onPrev, fillHeight = true, blankFront = blankFront && showFront)
             } else {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("No cards.", color = DarkMuted) }
             }
@@ -385,9 +462,13 @@ private fun LandscapeStudyLayout(
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     Button(onPrimaryAction, Modifier.weight(1f).height(36.dp), colors = ButtonDefaults.buttonColors(containerColor = AccentGood)) { Text(primaryActionText, fontSize = 11.sp) }
                     if (settings.showCustomSetButton) {
-                    IconButton(onCustomToggle, modifier = Modifier.size(36.dp).background(DarkPanel2, RoundedCornerShape(6.dp))) { Icon(if (inCustomSet) Icons.Default.Star else Icons.Default.StarBorder, "Custom", tint = if (inCustomSet) Color.Yellow else DarkMuted, modifier = Modifier.size(18.dp)) }
+                        OutlinedButton(onCustomToggle, modifier = Modifier.height(36.dp).width(48.dp), contentPadding = PaddingValues(0.dp)) {
+                            Icon(if (inCustomSet) Icons.Default.Star else Icons.Default.StarBorder, "Custom", tint = if (inCustomSet) Color.Yellow else DarkMuted, modifier = Modifier.size(18.dp))
+                        }
                     }
-                    IconButton(onBreakdown, modifier = Modifier.size(36.dp).background(DarkPanel2, RoundedCornerShape(6.dp))) { Icon(Icons.Default.Extension, "Breakdown", tint = if (currentBreakdown?.hasContent() == true) AccentBlue else DarkMuted, modifier = Modifier.size(18.dp)) }
+                    OutlinedButton(onBreakdown, modifier = Modifier.height(36.dp).width(48.dp), contentPadding = PaddingValues(0.dp)) {
+                        Icon(Icons.Default.Extension, "Breakdown", tint = if (currentBreakdown?.hasContent() == true) AccentBlue else DarkMuted, modifier = Modifier.size(18.dp))
+                    }
                     OutlinedButton(onSecondaryAction, Modifier.weight(1f).height(36.dp)) { Text(secondaryActionText, fontSize = 11.sp) }
                 }
                 if (atEnd) { Spacer(Modifier.height(4.dp)); OutlinedButton(onReturnTop, Modifier.fillMaxWidth().height(32.dp)) { Icon(Icons.Default.KeyboardArrowUp, "Top", Modifier.size(16.dp)); Text("Top", fontSize = 11.sp) } }
@@ -422,6 +503,8 @@ fun StudyScreen(nav: NavHostController, repo: Repository, statusFilter: CardStat
     val shouldRandomize = if (isActive) settings.randomizeUnlearned else settings.randomizeUnsure
     val landscape = isLandscape()
     var shuffleKey by remember { mutableStateOf(0) }  // Increment to force reshuffle
+    var studyMethod by remember { mutableStateOf(StudyMethod.DEFAULT) }  // ephemeral, per-deck
+    val effSettings = settings.withStudyMethod(studyMethod)
     val filteredCards = remember(allCards, progress, search, shouldRandomize, settings.sortMode, settings.studyFilterGroup, shuffleKey) {
         val base = allCards.filter { progress.getStatus(it.id) == statusFilter }
         val grouped = if (settings.studyFilterGroup != null) base.filter { it.group == settings.studyFilterGroup } else base
@@ -435,8 +518,8 @@ fun StudyScreen(nav: NavHostController, repo: Repository, statusFilter: CardStat
     val atEnd = index >= filteredCards.size - 1 && filteredCards.isNotEmpty()
     
     // Auto-speak on card change
-    LaunchedEffect(index, current?.id) {
-        if (settings.autoSpeakOnCardChange && current != null) {
+    LaunchedEffect(index, current?.id, studyMethod) {
+        if (effSettings.autoSpeakOnCardChange && current != null) {
             tts.setRate(settings.speechRate)
             val text = if (settings.speakPronunciationOnly && !current.pron.isNullOrBlank()) current.pron else current.term
             tts.speak(text)
@@ -457,7 +540,7 @@ fun StudyScreen(nav: NavHostController, repo: Repository, statusFilter: CardStat
                 LandscapeStudyLayout(
                     title = title,
                     cardCount = "Card ${index + 1} / ${filteredCards.size}",
-                    current = current, currentBreakdown = currentBreakdown, showFront = showFront, settings = settings,
+                    current = current, currentBreakdown = currentBreakdown, showFront = showFront, settings = effSettings,
                     groups = groups, selectedGroup = settings.studyFilterGroup, inCustomSet = inCustomSet, atEnd = atEnd,
                     showSearch = true, search = search, onSearchChange = { search = it; index = 0; showFront = true },
                     onFlip = { showFront = !showFront },
@@ -472,7 +555,8 @@ fun StudyScreen(nav: NavHostController, repo: Repository, statusFilter: CardStat
                     onCustomToggle = { scope.launch { current?.let { if (inCustomSet) repo.removeFromCustomSet(it.id) else repo.addToCustomSet(it.id) } } },
                     onBreakdown = { showBreakdown = true },
                     onReturnTop = { index = 0; showFront = true },
-                    onShuffle = { shuffleKey++; index = 0; showFront = true }
+                    onShuffle = { shuffleKey++; index = 0; showFront = true },
+                    blankFront = studyMethod == StudyMethod.SPEAK_FIRST
                 )
             }
         } else {
@@ -483,6 +567,7 @@ fun StudyScreen(nav: NavHostController, repo: Repository, statusFilter: CardStat
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton({ shuffleKey++; index = 0; showFront = true }) { Icon(Icons.Default.Shuffle, "Shuffle", tint = AccentBlue) }
                         IconButton({ searchExpanded = !searchExpanded }) { Icon(Icons.Default.Search, "Search", tint = DarkMuted) }
+                        StudyMethodDropdown(studyMethod) { studyMethod = it; index = 0; showFront = true }
                         GroupFilterDropdown(groups, settings.studyFilterGroup) { scope.launch { repo.saveSettingsAll(settings.copy(studyFilterGroup = it)) } }
                     }
                 }
@@ -508,7 +593,7 @@ fun StudyScreen(nav: NavHostController, repo: Repository, statusFilter: CardStat
                             Text("No ${title.lowercase()} cards.", color = DarkMuted)
                         } else {
                             Text("Card ${index + 1} / ${filteredCards.size}", color = DarkMuted, fontSize = 12.sp); Spacer(Modifier.height(4.dp))
-                            FlipCard(current, currentBreakdown, showFront, settings, { showFront = !showFront }, { if (index < filteredCards.size - 1) { index++; showFront = true } }, { if (index > 0) { index--; showFront = true } })
+                            FlipCard(current, currentBreakdown, showFront, effSettings, { showFront = !showFront }, { if (index < filteredCards.size - 1) { index++; showFront = true } }, { if (index > 0) { index--; showFront = true } }, blankFront = studyMethod == StudyMethod.SPEAK_FIRST && showFront)
                             Spacer(Modifier.height(6.dp))
                             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                                 OutlinedButton({ if (index > 0) { index--; showFront = true } }, modifier = Modifier.weight(1f)) { Text("Prev") }; Spacer(Modifier.width(6.dp))
@@ -561,12 +646,16 @@ fun LearnedScreen(nav: NavHostController, repo: Repository) {
     var index by remember { mutableStateOf(0) }
     var showBreakdown by remember { mutableStateOf(false) }
     var breakdownCard by remember { mutableStateOf<FlashCard?>(null) }
+    // Ephemeral per-deck study method + shuffle (reset on restart; do not persist)
+    var studyMethod by remember { mutableStateOf(StudyMethod.DEFAULT) }
+    var shuffleKey by remember { mutableStateOf(0) }
+    val effSettings = settings.withStudyMethod(studyMethod)
     val landscape = isLandscape()
-    val learnedCards = remember(allCards, progress, search, viewMode, settings) {
+    val learnedCards = remember(allCards, progress, search, viewMode, settings, shuffleKey) {
         val base = allCards.filter { progress.getStatus(it.id) == CardStatus.LEARNED }
         val grouped = if (viewMode == LearnedViewMode.STUDY && settings.studyFilterGroup != null) base.filter { it.group == settings.studyFilterGroup } else base
         val searched = if (search.isBlank()) grouped else grouped.filter { it.term.contains(search, true) || it.meaning.contains(search, true) }
-        if (viewMode == LearnedViewMode.STUDY && settings.randomizeLearnedStudy) searched.shuffled() else sortCards(searched, settings.sortMode, false)
+        if (viewMode == LearnedViewMode.STUDY && (settings.randomizeLearnedStudy || shuffleKey > 0)) searched.shuffled() else sortCards(searched, settings.sortMode, false)
     }
     LaunchedEffect(learnedCards.size) { if (learnedCards.isEmpty()) index = 0 else index = index.coerceIn(0, learnedCards.size - 1); showFront = true }
     val current = learnedCards.getOrNull(index)
@@ -575,8 +664,8 @@ fun LearnedScreen(nav: NavHostController, repo: Repository) {
     val atEnd = index >= learnedCards.size - 1 && learnedCards.isNotEmpty()
     
     // Auto-speak on card change (Learned Study mode)
-    LaunchedEffect(index, current?.id, viewMode) {
-        if (viewMode == LearnedViewMode.STUDY && settings.autoSpeakOnCardChange && current != null) {
+    LaunchedEffect(index, current?.id, viewMode, studyMethod) {
+        if (viewMode == LearnedViewMode.STUDY && effSettings.autoSpeakOnCardChange && current != null) {
             tts.setRate(settings.speechRate)
             val text = if (settings.speakPronunciationOnly && !current.pron.isNullOrBlank()) current.pron else current.term
             tts.speak(text)
@@ -597,7 +686,7 @@ fun LearnedScreen(nav: NavHostController, repo: Repository) {
             Box(Modifier.fillMaxSize().padding(pad)) {
                 LandscapeStudyLayout(
                     title = "Learned", cardCount = "Card ${index + 1} / ${learnedCards.size}",
-                    current = current, currentBreakdown = currentBreakdown, showFront = showFront, settings = settings,
+                    current = current, currentBreakdown = currentBreakdown, showFront = showFront, settings = effSettings,
                     groups = groups, selectedGroup = settings.studyFilterGroup, inCustomSet = inCustomSet, atEnd = atEnd,
                     showSearch = true, search = search, onSearchChange = { search = it; index = 0; showFront = true },
                     onFlip = { showFront = !showFront },
@@ -611,7 +700,9 @@ fun LearnedScreen(nav: NavHostController, repo: Repository) {
                     secondaryActionText = "Unsure",
                     onCustomToggle = { scope.launch { current?.let { if (inCustomSet) repo.removeFromCustomSet(it.id) else repo.addToCustomSet(it.id) } } },
                     onBreakdown = { showBreakdown = true; breakdownCard = current },
-                    onReturnTop = { index = 0; showFront = true }
+                    onReturnTop = { index = 0; showFront = true },
+                    onShuffle = { shuffleKey++; index = 0; showFront = true },
+                    blankFront = studyMethod == StudyMethod.SPEAK_FIRST
                 )
             }
         } else {
@@ -627,7 +718,11 @@ fun LearnedScreen(nav: NavHostController, repo: Repository) {
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton({ searchExpanded = !searchExpanded }) { Icon(Icons.Default.Search, "Search", tint = DarkMuted) }
-                        if (viewMode == LearnedViewMode.STUDY) { GroupFilterDropdown(groups, settings.studyFilterGroup) { scope.launch { repo.saveSettingsAll(settings.copy(studyFilterGroup = it)) } } }
+                        if (viewMode == LearnedViewMode.STUDY) {
+                            IconButton({ shuffleKey++; index = 0; showFront = true }) { Icon(Icons.Default.Shuffle, "Shuffle", tint = AccentBlue) }
+                            StudyMethodDropdown(studyMethod) { studyMethod = it; index = 0; showFront = true }
+                            GroupFilterDropdown(groups, settings.studyFilterGroup) { scope.launch { repo.saveSettingsAll(settings.copy(studyFilterGroup = it)) } }
+                        }
                     }
                 }
                 if (searchExpanded) {
@@ -672,7 +767,7 @@ fun LearnedScreen(nav: NavHostController, repo: Repository) {
                     if (current == null) Text("No learned cards.", color = DarkMuted)
                     else {
                         Text("Card ${index + 1} / ${learnedCards.size}", color = DarkMuted, fontSize = 12.sp); Spacer(Modifier.height(4.dp))
-                        FlipCard(current, currentBreakdown, showFront, settings, { showFront = !showFront }, { if (index < learnedCards.size - 1) { index++; showFront = true } }, { if (index > 0) { index--; showFront = true } })
+                        FlipCard(current, currentBreakdown, showFront, effSettings, { showFront = !showFront }, { if (index < learnedCards.size - 1) { index++; showFront = true } }, { if (index > 0) { index--; showFront = true } }, blankFront = studyMethod == StudyMethod.SPEAK_FIRST && showFront)
                         Spacer(Modifier.height(6.dp))
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                             OutlinedButton({ if (index > 0) { index--; showFront = true } }, enabled = index > 0, modifier = Modifier.weight(1f)) { Text("Prev") }; Spacer(Modifier.width(6.dp))
@@ -1148,7 +1243,8 @@ fun SettingsScreen(nav: NavHostController, repo: Repository) {
             Text("Display", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.White)
             SettingToggle("Show group label", settings.showGroup) { scope.launch { repo.saveSettingsAll(settings.copy(showGroup = it)) } }
             SettingToggle("Show subgroup label", settings.showSubgroup) { scope.launch { repo.saveSettingsAll(settings.copy(showSubgroup = it)) } }
-            SettingToggle("Definition first (reverse)", settings.reverseCards) { scope.launch { repo.saveSettingsAll(settings.copy(reverseCards = it)) } }
+            // "Definition first (reverse)" moved into the per-deck Study Method
+            // dropdown (ephemeral, does not persist across restarts or decks).
             SettingToggle("Show breakdown on definition", settings.showBreakdownOnDefinition) { scope.launch { repo.saveSettingsAll(settings.copy(showBreakdownOnDefinition = it)) } }
             
             Spacer(Modifier.height(12.dp)); Text("Sorting", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.White)
@@ -1226,6 +1322,28 @@ fun SettingsScreen(nav: NavHostController, repo: Repository) {
                     Text("(Pending)", color = Color.Yellow, fontSize = 10.sp)
                 }
             }
+
+            // Sync status indicator: green = synced, orange = pending upload,
+            // red = last sync failed (push/pull manually).
+            if (adminSettings.isLoggedIn) {
+                Spacer(Modifier.height(6.dp))
+                val (dotColor, statusLabel) = when (adminSettings.lastSyncStatus) {
+                    "green" -> Color(0xFF2E7D32) to "All changes synced"
+                    "orange" -> Color(0xFFED6C02) to "Changes pending upload"
+                    "red" -> Color(0xFFC62828) to "Sync failed - push/pull manually"
+                    else -> DarkMuted to "Not synced yet"
+                }
+                Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(Modifier.size(10.dp).clip(CircleShape).background(dotColor))
+                    Spacer(Modifier.width(8.dp))
+                    Column {
+                        Text(statusLabel, fontSize = 11.sp, color = Color.White)
+                        if (adminSettings.lastSyncTime > 0) {
+                            Text("Last synced: ${formatRelativeTime(adminSettings.lastSyncTime)}", fontSize = 10.sp, color = DarkMuted)
+                        }
+                    }
+                }
+            }
             
             Spacer(Modifier.height(16.dp)); HorizontalDivider(color = DarkBorder); Spacer(Modifier.height(12.dp))
             
@@ -1241,6 +1359,20 @@ fun SettingsScreen(nav: NavHostController, repo: Repository) {
             OutlinedButton({ nav.navigate(Route.About.path) }, Modifier.fillMaxWidth()) {
                 Icon(Icons.Default.Info, "About"); Spacer(Modifier.width(8.dp)); Text("About")
             }
+        }
+    }
+}
+
+private fun formatRelativeTime(epochMillis: Long): String {
+    if (epochMillis <= 0) return "never"
+    val diff = System.currentTimeMillis() - epochMillis
+    return when {
+        diff < 60_000 -> "just now"
+        diff < 3_600_000 -> "${diff / 60_000} min ago"
+        diff < 86_400_000 -> "${diff / 3_600_000} hr ago"
+        else -> {
+            val sdf = java.text.SimpleDateFormat("MMM d, h:mm a", java.util.Locale.getDefault())
+            sdf.format(java.util.Date(epochMillis))
         }
     }
 }
@@ -1268,11 +1400,14 @@ fun AdminScreen(nav: NavHostController, repo: Repository) {
     var chatGptModel by remember(adminSettings) { mutableStateOf(adminSettings.chatGptModel) }
     var geminiKey by remember(adminSettings) { mutableStateOf(adminSettings.geminiApiKey) }
     var geminiModel by remember(adminSettings) { mutableStateOf(adminSettings.geminiModel) }
+    var managedScheme by remember(adminSettings) {
+        mutableStateOf(if (adminSettings.webAppUrl.startsWith("https://")) "https" else "http")
+    }
     var managedHost by remember(adminSettings) {
         mutableStateOf(
             adminSettings.webAppUrl
                 .removePrefix("http://").removePrefix("https://")
-                .substringBefore(":").ifBlank { "sidscri.tplinkdns.com" }
+                .substringBefore(":").substringBefore("/").ifBlank { "sidscri.from-tx.com" }
         )
     }
     var managedPort by remember(adminSettings) {
@@ -1590,7 +1725,7 @@ Spacer(Modifier.height(16.dp))
                 singleLine = true,
                 textStyle = LocalTextStyle.current.copy(fontSize = 12.sp),
                 leadingIcon = { Icon(Icons.Default.Cloud, "Host") },
-                placeholder = { Text("sidscri.tplinkdns.com", color = DarkMuted, fontSize = 11.sp) }
+                placeholder = { Text("sidscri.from-tx.com", color = DarkMuted, fontSize = 11.sp) }
             )
             Spacer(Modifier.height(8.dp))
             OutlinedTextField(
@@ -1604,7 +1739,24 @@ Spacer(Modifier.height(16.dp))
             )
             Spacer(Modifier.height(8.dp))
 
-            val previewUrl = "http://${managedHost.trim()}:${managedPort.trim()}"
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                FilterChip(
+                    selected = managedScheme == "http",
+                    onClick = { managedScheme = "http" },
+                    label = { Text("http", fontSize = 12.sp) }
+                )
+                FilterChip(
+                    selected = managedScheme == "https",
+                    onClick = { managedScheme = "https" },
+                    label = { Text("https (Caddy/TLS)", fontSize = 12.sp) }
+                )
+            }
+            Spacer(Modifier.height(8.dp))
+
+            val previewPort = managedPort.trim().toIntOrNull() ?: 8009
+            val previewIsDefaultPort = (managedScheme == "http" && previewPort == 80) || (managedScheme == "https" && previewPort == 443)
+            val previewUrl = if (previewIsDefaultPort) "$managedScheme://${managedHost.trim()}"
+                             else "$managedScheme://${managedHost.trim()}:$previewPort"
             Text("Preview: $previewUrl", color = DarkMuted, fontSize = 11.sp)
             Spacer(Modifier.height(8.dp))
 
@@ -1624,6 +1776,7 @@ Spacer(Modifier.height(16.dp))
                     scope.launch {
                         val config = RemoteConfig(
                             serverType = managedServerType,
+                            scheme = managedScheme,
                             host = managedHost.trim(),
                             port = managedPort.trim().toIntOrNull() ?: 8009
                         )
@@ -1644,10 +1797,11 @@ Spacer(Modifier.height(16.dp))
                 scope.launch {
                     val res = repo.syncPullRemoteConfig(adminSettings.webAppUrl.ifBlank { WebAppSync.DEFAULT_SERVER_URL })
                     if (res.success) {
+                        managedScheme = if (res.config.scheme.equals("https", ignoreCase = true)) "https" else "http"
                         managedHost = res.config.host
                         managedPort = res.config.port.toString()
                         managedServerType = res.config.serverType
-                        statusMessage = "Remote config pulled. Updated: ${res.config.serverType} @ ${res.config.host}:${res.config.port}"
+                        statusMessage = "Remote config pulled. Updated: ${res.config.serverType} @ ${res.config.toBaseUrl()}"
                     } else {
                         statusMessage = "Pull failed: ${res.error.ifBlank { "Endpoint not available" }}"
                     }
@@ -2238,8 +2392,12 @@ fun SyncProgressScreen(nav: NavHostController, repo: Repository) {
                     isLoading = true
                     scope.launch { 
                         val result = repo.syncPushAll(adminSettings.authToken, adminSettings.webAppUrl)
-                        statusMessage = if (result.success) "Push complete: decks, cards, and progress sent." else "Error: ${result.error}"
-                        if (result.success) { repo.saveAdminSettings(adminSettings.copy(lastSyncTime = System.currentTimeMillis(), pendingSync = false)) }
+                        statusMessage = if (result.success) "Push complete: decks, cards, breakdowns, and progress sent." else "Error: ${result.error}"
+                        repo.saveAdminSettings(adminSettings.copy(
+                            lastSyncTime = if (result.success) System.currentTimeMillis() else adminSettings.lastSyncTime,
+                            pendingSync = !result.success,
+                            lastSyncStatus = if (result.success) "green" else "red"
+                        ))
                         isLoading = false 
                     } 
                 }, Modifier.weight(1f), enabled = !isLoading && adminSettings.isLoggedIn) { Text(if (isLoading) "..." else "Push All") }
@@ -2250,10 +2408,13 @@ fun SyncProgressScreen(nav: NavHostController, repo: Repository) {
                     scope.launch { 
                         val result = repo.syncPullAll(adminSettings.authToken, adminSettings.webAppUrl)
                         if (result.success) {
+                            repo.syncBreakdowns()  // pull shared breakdowns too
                             val keysResult = repo.syncPullApiKeysForUser(adminSettings.authToken, adminSettings.webAppUrl)
                             repo.saveAdminSettings(
                                 adminSettings.copy(
                                     lastSyncTime = System.currentTimeMillis(),
+                                    lastSyncStatus = "green",
+                                    pendingSync = false,
                                     chatGptApiKey = if (keysResult.success) keysResult.chatGptKey else adminSettings.chatGptApiKey,
                                     chatGptModel = if (keysResult.success) keysResult.chatGptModel else adminSettings.chatGptModel,
                                     geminiApiKey = if (keysResult.success) keysResult.geminiKey else adminSettings.geminiApiKey,
@@ -2262,8 +2423,9 @@ fun SyncProgressScreen(nav: NavHostController, repo: Repository) {
                                     geminiEnabled = if (keysResult.success) keysResult.geminiKey.isNotBlank() else adminSettings.geminiEnabled
                                 )
                             )
-                            statusMessage = "Pull complete: decks, cards, progress, and AI access refreshed."
+                            statusMessage = "Pull complete: decks, cards, breakdowns, progress, and AI access refreshed."
                         } else {
+                            repo.saveAdminSettings(adminSettings.copy(lastSyncStatus = "red"))
                             statusMessage = "Error: ${result.error}"
                         }
                         isLoading = false 
@@ -2507,16 +2669,17 @@ fun ManageDecksScreen(nav: NavHostController, repo: Repository) {
     // File picker launchers
     val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
-            val fileName = uri.lastPathSegment ?: "image"
+            val fileName = FileUploadUtil.queryName(context, uri)
             uploadedFileName = fileName
             uploadedCreateMethod = "upload_image"
+            selectedDocumentUri = uri
             statusMessage = "Image selected: $fileName"
         }
     }
     
     val documentPickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
-            val fileName = uri.lastPathSegment ?: "document"
+            val fileName = FileUploadUtil.queryName(context, uri)
             uploadedFileName = fileName
             uploadedCreateMethod = "upload_document"
             selectedDocumentUri = uri
@@ -2616,7 +2779,7 @@ fun ManageDecksScreen(nav: NavHostController, repo: Repository) {
                                 Spacer(Modifier.width(8.dp))
                                 Column {
                                     Text("Current: ${decks.find { it.id == deckSettings.activeDeckId }?.name ?: "Kenpo Vocabulary"}", color = Color.White, fontWeight = FontWeight.Bold)
-                                    Text("${decks.find { it.id == deckSettings.activeDeckId }?.cardCount ?: 88} cards", color = DarkMuted, fontSize = 11.sp)
+                                    Text("${decks.find { it.id == deckSettings.activeDeckId }?.cardCount ?: 0} cards", color = DarkMuted, fontSize = 11.sp)
                                 }
                             }
                         }
@@ -2652,6 +2815,9 @@ fun ManageDecksScreen(nav: NavHostController, repo: Repository) {
                                             if (deck.isBuiltIn) {
                                                 Spacer(Modifier.width(8.dp))
                                                 AssistChip(onClick = {}, label = { Text("Built-in", fontSize = 9.sp) }, modifier = Modifier.height(20.dp))
+                                            } else if (!deck.canEdit) {
+                                                Spacer(Modifier.width(8.dp))
+                                                AssistChip(onClick = {}, label = { Text("Sample", fontSize = 9.sp) }, modifier = Modifier.height(20.dp))
                                             }
                                             if (deck.isDefault) {
                                                 Spacer(Modifier.width(4.dp))
@@ -2661,7 +2827,7 @@ fun ManageDecksScreen(nav: NavHostController, repo: Repository) {
                                         Text(deck.description, color = DarkMuted, fontSize = 11.sp)
                                         Text("${deck.cardCount} cards", color = DarkMuted, fontSize = 10.sp)
                                     }
-                                    if (!deck.isBuiltIn) {
+                                    if (!deck.isBuiltIn && deck.canEdit) {
                                         // Set/Clear Default button (v5.5.0+)
                                         IconButton(onClick = {
                                             scope.launch {
@@ -3329,23 +3495,42 @@ fun ManageDecksScreen(nav: NavHostController, repo: Repository) {
                                             statusMessage = "Error: Enter a deck name or search keywords"
                                             return@Button
                                         }
-                                        if (!hasAiAccess) {
-                                            statusMessage = "Error: Configure AI in Admin Settings first"
+                                        val canUseServer = adminSettings.isLoggedIn && adminSettings.authToken.isNotBlank()
+                                        if (!hasAiAccess && !canUseServer) {
+                                            statusMessage = "Error: Configure AI in Admin Settings, or log in to your server"
                                             return@Button
                                         }
                                         isLoading = true
                                         scope.launch {
                                             try {
                                                 val maxCards = aiMaxCards.toIntOrNull() ?: 20
-                                                val results = AiGenerationHelper.searchAndGenerateTerms(
-                                                    apiKey, searchTerms, maxCards, aiModel, adminSettings.chatGptEnabled, descriptive = false
-                                                )
+                                                // Prefer the server generator whenever logged in: it
+                                                // has a known-good model, key, and JSON parsing (this is
+                                                // the same path the web app uses). Fall back to the local
+                                                // on-device key only when not logged into a server.
+                                                val results = if (canUseServer) {
+                                                    val res = WebAppSync.generateDeckOnServer(
+                                                        serverUrl = adminSettings.webAppUrl,
+                                                        token = adminSettings.authToken,
+                                                        genType = "keywords",
+                                                        maxCards = maxCards,
+                                                        keywords = searchTerms
+                                                    )
+                                                    if (!res.success && res.error.isNotBlank()) {
+                                                        statusMessage = "Error: ${res.error}"
+                                                    }
+                                                    res.cards
+                                                } else {
+                                                    AiGenerationHelper.searchAndGenerateTerms(
+                                                        apiKey, searchTerms, maxCards, aiModel, adminSettings.chatGptEnabled, descriptive = false
+                                                    )
+                                                }
                                                 if (results.isNotEmpty()) {
                                                     aiGeneratedTerms = results
                                                     selectedAiTerms = emptySet()
                                                     showAiResults = true
                                                     statusMessage = "Generated ${results.size} terms. Select which to add."
-                                                } else {
+                                                } else if (statusMessage.startsWith("Error:").not()) {
                                                     statusMessage = "AI could not generate terms. Try different keywords."
                                                 }
                                             } catch (e: Exception) {
@@ -3355,7 +3540,7 @@ fun ManageDecksScreen(nav: NavHostController, repo: Repository) {
                                         }
                                     },
                                     modifier = Modifier.fillMaxWidth(),
-                                    enabled = !isLoading && hasAiAccess
+                                    enabled = !isLoading && (hasAiAccess || (adminSettings.isLoggedIn && adminSettings.authToken.isNotBlank()))
                                 ) {
                                     if (isLoading) {
                                         CircularProgressIndicator(Modifier.size(18.dp), color = Color.White, strokeWidth = 2.dp)
@@ -3422,6 +3607,17 @@ fun ManageDecksScreen(nav: NavHostController, repo: Repository) {
                                         OutlinedButton({ selectedAiTerms = emptySet() }, Modifier.weight(1f)) {
                                             Text("Clear", fontSize = 11.sp)
                                         }
+                                        Spacer(Modifier.width(8.dp))
+                                        OutlinedButton({
+                                            // Swap term <-> definition for every generated card (flips
+                                            // both the display and what gets saved). Pronunciation clears
+                                            // since it applied to the original term.
+                                            aiGeneratedTerms = aiGeneratedTerms.map {
+                                                it.copy(term = it.definition, definition = it.term, pronunciation = "")
+                                            }
+                                        }, Modifier.weight(1f)) {
+                                            Text("⇅ Swap Q/A", fontSize = 11.sp)
+                                        }
                                     }
                                 }
                             }
@@ -3462,21 +3658,45 @@ fun ManageDecksScreen(nav: NavHostController, repo: Repository) {
                                     Spacer(Modifier.height(12.dp))
                                     Button(
                                         onClick = {
-                                            if (!hasAiAccess) {
-                                                statusMessage = "Error: Configure AI in Admin Settings first"
+                                            if (!adminSettings.isLoggedIn || adminSettings.authToken.isBlank()) {
+                                                statusMessage = "Error: Log in to your server to use AI scanning"
+                                                return@Button
+                                            }
+                                            val imgUri = selectedDocumentUri
+                                            if (imgUri == null) {
+                                                statusMessage = "Error: Select an image first"
                                                 return@Button
                                             }
                                             isLoading = true
                                             statusMessage = "Scanning image with AI..."
                                             scope.launch {
-                                                // TODO: Implement actual image OCR + AI extraction
-                                                // For now, show placeholder message
-                                                statusMessage = "Image scanning coming soon. Use AI Search for now."
+                                                try {
+                                                    val loaded = withContext(Dispatchers.IO) {
+                                                        FileUploadUtil.loadAsDataUrl(context, imgUri)
+                                                    }
+                                                    val res = WebAppSync.generateDeckOnServer(
+                                                        serverUrl = adminSettings.webAppUrl,
+                                                        token = adminSettings.authToken,
+                                                        genType = "photo",
+                                                        maxCards = aiMaxCards.toIntOrNull() ?: 20,
+                                                        imageDataUrl = loaded.dataUrl
+                                                    )
+                                                    if (res.success && res.cards.isNotEmpty()) {
+                                                        aiGeneratedTerms = res.cards
+                                                        selectedAiTerms = res.cards.indices.toSet()
+                                                        showAiResults = true
+                                                        statusMessage = "Extracted ${res.cards.size} cards. Review and create the deck below."
+                                                    } else {
+                                                        statusMessage = "Error: ${res.error.ifBlank { "No cards found in image" }}"
+                                                    }
+                                                } catch (e: Exception) {
+                                                    statusMessage = "Error: ${e.message}"
+                                                }
                                                 isLoading = false
                                             }
                                         },
                                         modifier = Modifier.fillMaxWidth(),
-                                        enabled = hasAiAccess && !isLoading
+                                        enabled = !isLoading
                                     ) {
                                         if (isLoading) {
                                             CircularProgressIndicator(Modifier.size(18.dp), color = Color.White, strokeWidth = 2.dp)
@@ -3488,13 +3708,13 @@ fun ManageDecksScreen(nav: NavHostController, repo: Repository) {
                                     }
                                 }
                                 
-                                if (!hasAiAccess) {
+                                if (!adminSettings.isLoggedIn) {
                                     Spacer(Modifier.height(8.dp))
                                     Card(colors = CardDefaults.cardColors(containerColor = Color(0xFF3D2D12)), modifier = Modifier.fillMaxWidth()) {
                                         Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                                             Icon(Icons.Default.Warning, "Warning", tint = Color.Yellow)
                                             Spacer(Modifier.width(8.dp))
-                                            Text("AI not configured. Go to Admin Settings to add API keys.", color = Color.Yellow, fontSize = 11.sp)
+                                            Text("Log in to your server (More -> Login) to use AI image scanning.", color = Color.Yellow, fontSize = 11.sp)
                                         }
                                     }
                                 }
@@ -3653,13 +3873,44 @@ fun ManageDecksScreen(nav: NavHostController, repo: Repository) {
                                     } else {
                                         Button(
                                             onClick = {
-                                                if (!hasAiAccess) {
-                                                    statusMessage = "AI document processing is not enabled for this user."
+                                                if (!adminSettings.isLoggedIn || adminSettings.authToken.isBlank()) {
+                                                    statusMessage = "Error: Log in to your server to use AI scanning"
+                                                    return@Button
+                                                }
+                                                val docUri = selectedDocumentUri
+                                                if (docUri == null) {
+                                                    statusMessage = "Error: Select a document first"
                                                     return@Button
                                                 }
                                                 isLoading = true
-                                                statusMessage = "Document AI import is not implemented in Android yet. Use a valid JSON file for direct import, or use the web app for AI document creation."
-                                                scope.launch { isLoading = false }
+                                                statusMessage = "Reading document and generating cards with AI..."
+                                                scope.launch {
+                                                    try {
+                                                        val loaded = withContext(Dispatchers.IO) {
+                                                            FileUploadUtil.loadAsDataUrl(context, docUri)
+                                                        }
+                                                        val res = WebAppSync.generateDeckOnServer(
+                                                            serverUrl = adminSettings.webAppUrl,
+                                                            token = adminSettings.authToken,
+                                                            genType = "document",
+                                                            maxCards = aiMaxCards.toIntOrNull() ?: 20,
+                                                            docName = loaded.name,
+                                                            docType = loaded.mimeType,
+                                                            docContentDataUrl = loaded.dataUrl
+                                                        )
+                                                        if (res.success && res.cards.isNotEmpty()) {
+                                                            aiGeneratedTerms = res.cards
+                                                            selectedAiTerms = res.cards.indices.toSet()
+                                                            showAiResults = true
+                                                            statusMessage = "Extracted ${res.cards.size} cards. Review and create the deck below."
+                                                        } else {
+                                                            statusMessage = "Error: ${res.error.ifBlank { "No cards found in document" }}"
+                                                        }
+                                                    } catch (e: Exception) {
+                                                        statusMessage = "Error: ${e.message}"
+                                                    }
+                                                    isLoading = false
+                                                }
                                             },
                                             modifier = Modifier.fillMaxWidth(),
                                             enabled = !isLoading

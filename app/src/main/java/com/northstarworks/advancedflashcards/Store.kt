@@ -382,7 +382,7 @@ private fun decodeProgressEntries(raw: String): Map<String, ProgressEntry> {
         o.put("webAppUrl", s.webAppUrl); o.put("serverType", s.serverType); o.put("authToken", s.authToken); o.put("username", s.username); o.put("isLoggedIn", s.isLoggedIn); o.put("lastSyncTime", s.lastSyncTime); o.put("isAdmin", s.isAdmin)
         o.put("chatGptApiKey", s.chatGptApiKey); o.put("chatGptEnabled", s.chatGptEnabled); o.put("chatGptModel", s.chatGptModel)
         o.put("geminiApiKey", s.geminiApiKey); o.put("geminiEnabled", s.geminiEnabled); o.put("geminiModel", s.geminiModel)
-        o.put("autoPullOnLogin", s.autoPullOnLogin); o.put("autoPushOnChange", s.autoPushOnChange); o.put("pendingSync", s.pendingSync)
+        o.put("autoPullOnLogin", s.autoPullOnLogin); o.put("autoPushOnChange", s.autoPushOnChange); o.put("pendingSync", s.pendingSync); o.put("lastSyncStatus", s.lastSyncStatus)
         o.put("breakdownAiChoice", s.breakdownAiChoice.name)
         return o.toString()
     }
@@ -398,8 +398,9 @@ private fun decodeProgressEntries(raw: String): Map<String, ProgressEntry> {
                 chatGptModel = o.optString("chatGptModel", "gpt-4o"),
                 geminiApiKey = o.optString("geminiApiKey", ""), geminiEnabled = o.optBoolean("geminiEnabled", false),
                 geminiModel = o.optString("geminiModel", "gemini-1.5-flash"),
-                autoPullOnLogin = o.optBoolean("autoPullOnLogin", true), autoPushOnChange = o.optBoolean("autoPushOnChange", false),
+                autoPullOnLogin = o.optBoolean("autoPullOnLogin", true), autoPushOnChange = o.optBoolean("autoPushOnChange", true),
                 pendingSync = o.optBoolean("pendingSync", false),
+                lastSyncStatus = o.optString("lastSyncStatus", ""),
                 breakdownAiChoice = runCatching { BreakdownAiChoice.valueOf(o.optString("breakdownAiChoice", BreakdownAiChoice.AUTO_SELECT.name)) }.getOrDefault(BreakdownAiChoice.AUTO_SELECT)
             )
         } catch (_: Exception) { AdminSettings() }
@@ -415,7 +416,7 @@ private fun decodeProgressEntries(raw: String): Map<String, ProgressEntry> {
      */
     fun decksFlow(): Flow<List<StudyDeck>> = context.dataStore.data.map { prefs ->
         val raw = prefs[KEY_DECKS_JSON]
-        val decks = mutableListOf(StudyDeck.KENPO_DEFAULT)  // Always include default
+        val decks = mutableListOf<StudyDeck>()
         if (!raw.isNullOrBlank()) {
             try {
                 val arr = JSONArray(raw)
@@ -424,6 +425,9 @@ private fun decodeProgressEntries(raw: String): Map<String, ProgressEntry> {
                 }
             } catch (_: Exception) {}
         }
+        // The Kenpo deck now lives on the server; only show the local
+        // placeholder until the first sync delivers the real record.
+        if (decks.none { it.id == "kenpo" }) decks.add(0, StudyDeck.KENPO_DEFAULT)
         decks
     }
 
@@ -474,7 +478,10 @@ private fun decodeProgressEntries(raw: String): Map<String, ProgressEntry> {
     suspend fun replaceDecksFromServer(decks: List<StudyDeck>) {
         context.dataStore.edit { prefs ->
             val arr = JSONArray()
-            decks.filter { it.id != "kenpo" }.forEach { arr.put(encodeDeck(it)) }
+            // Store every server deck, including kenpo - it is a normal
+            // admin-owned default-sample deck now, and the server record
+            // carries the real card count and edit permission.
+            decks.forEach { arr.put(encodeDeck(it)) }
             prefs[KEY_DECKS_JSON] = arr.toString()
         }
     }
@@ -674,6 +681,7 @@ suspend fun addDeck(deck: StudyDeck) {
         o.put("cardCount", deck.cardCount); o.put("createdAt", deck.createdAt); o.put("updatedAt", deck.updatedAt)
         deck.logoPath?.let { o.put("logoPath", it) }
         o.put("descriptiveDefinitions", deck.descriptiveDefinitions)
+        o.put("canEdit", deck.canEdit)
         return o
     }
 
@@ -689,7 +697,8 @@ suspend fun addDeck(deck: StudyDeck) {
             createdAt = o.optLong("createdAt", 0),
             updatedAt = o.optLong("updatedAt", 0),
             logoPath = o.optString("logoPath", null)?.takeIf { it.isNotBlank() },
-            descriptiveDefinitions = o.optBoolean("descriptiveDefinitions", false)
+            descriptiveDefinitions = o.optBoolean("descriptiveDefinitions", false),
+            canEdit = o.optBoolean("canEdit", true)
         )
     }
 
