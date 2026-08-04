@@ -87,7 +87,6 @@ All notable changes are documented here. Format: **Added / Changed / Fixed**.
 - Stale "88 cards" fallback in the deck switcher header → 0.
 - Deck action buttons (edit/delete/set-default) now gate on canEdit instead of !isBuiltIn.
 
----
 
 ## 7.5.0 (build 47) — 2026-07-17
 

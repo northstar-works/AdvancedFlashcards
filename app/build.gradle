@@ -13,6 +13,7 @@ android {
         targetSdk 35
         versionCode 55
         versionName "7.10.0"
+
     }
 
     buildFeatures { compose true }
